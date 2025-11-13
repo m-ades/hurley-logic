@@ -21,7 +21,7 @@ export const PROOFS = [
   },
   {
     id: 5,
-    premises: ['(∀x)[(Jx ⊃ (Kx • Lx)]', '(∃y)~Ky'],
+    premises: ['(∀x)[Jx ⊃ (Kx • Lx)]', '(∃y)~Ky'],
     conclusion: '(∃z)~Jz',
   },
   {

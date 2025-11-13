@@ -289,10 +289,12 @@ export default class DerivationCheck {
             this.rulechecked = false;
             return line;
         }
-        if (!line.isshowline && ruleinfo.showrule) {
+        // show-rule restriction might be useful only for implementing CP/IP later
+        if (!line.isshowline && ruleinfo.showrule && 
+            (rulechecked == 'CP' || rulechecked == 'IP' || rulechecked == 'ACP' || rulechecked == 'AIP')) {
             this.adderror(line.n, 'justification', 'high', 'cites a show-rule ' +
                 'for a non-show-line');
-            this.rulechecked = false;
+            line.rulechecked = false;
             return line;
         }
         if (!line.isshowline) {
@@ -1007,6 +1009,38 @@ export class formFit {
         }
     }
 
+    checkUG() {
+        if (this.rulename != "UG") { return; }
+        const Formula = this.Formula;
+        const psi = this.resultf;
+        if (psi.op != Formula.syntax.symbols.FORALL) {
+            this.possible = false;
+            this.message = 'UG requires a ∀-statement as the conclusion.';
+            return;
+        }
+        const x = psi.boundvar;
+        const phi = psi.right;
+        if (!this.line.citedlines || this.line.citedlines.length == 0) {
+            this.possible = false;
+            this.message = 'UG requires citing a line.';
+            return;
+        }
+        const citedLine = this.line.citedlines[0];
+        if (!citedLine || !citedLine.s) {
+            this.possible = false;
+            this.message = 'UG requires citing a line with a formula.';
+            return;
+        }
+        const citedFormula = Formula.from(citedLine.s);
+        if (citedFormula.normal == phi.normal) {
+            this.possible = true;
+            this.message = '';
+        } else {
+            this.possible = false;
+            this.message = 'cited line does not contain the formula without the quantifier.';
+        }
+    }
+
     checkRestrictions() {
         const Formula = this.Formula;
         // rule must have a restriction
@@ -1397,7 +1431,7 @@ export class formFit {
             // which is available
             if (checkpart.parts) {
                 if (checkpart.showline) {
-                    const f = Formula.from(currsubderiv.showline.s);
+                    const f = Formula.from(checkpart.showline.s);
                     if (f.terms.indexOf(newname) !== -1) {
                         return false;
                     }
@@ -1422,6 +1456,7 @@ export class formFit {
         this.checkDiffersBy();
         this.checkRestrictions();
         this.checkUI();
+        this.checkUG();
         const newresult = this.checkNewness();
         if (!newresult) {
             if (this.message != '') { this.message += '; '; }

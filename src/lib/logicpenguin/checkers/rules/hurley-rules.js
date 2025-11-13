@@ -66,7 +66,7 @@ const hurleyRules = {
             conc: "At" 
         }
     ]},
-    "UG"  : { pred: true, showrule: true, forms: [ { conc: "∀xAx", subst: {"x":"n"}, subderivs: [ { "needs": ["An"], wantsasnew: ["n"], subshowrequired: true } ] } ] },
+    "UG"  : { pred: true, forms: [ { prems: ["An"], conc: "∀xAx", subst: {"x":"n"} } ] },
     "EI"  : { pred: true, forms: [ { prems: ["∃xAx"], conc: "Aa", mustbenew: ["a"], subst: {"x":"a"} } ] },
 
     "EG"  : { pred: true, forms: [ 
