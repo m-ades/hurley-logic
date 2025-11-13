@@ -102,6 +102,9 @@ function inputfix(s) {
     if (this.symbols.AND != '^') {
         rv = rv.replace(/\^/g, this.symbols.AND);
     }
+    rv = rv.replace(/\ball\b/gi, this.symbols.FORALL); // 'all' becomes ∀
+    rv = rv.replace(/\bsome\b/gi, this.symbols.EXISTS); // 'some' becomes ∃ 
+    rv = rv.replace(/==/g, this.symbols.IFF); // '==' becomes ≡
     
     // spaces only surround binary operators …
     for (const op in symbolcat) {

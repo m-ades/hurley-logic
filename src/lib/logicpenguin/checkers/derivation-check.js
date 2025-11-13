@@ -972,6 +972,41 @@ export class formFit {
         }
     }
 
+    checkUI() {
+        if (this.rulename != "UI" || !this.possible) { return; }
+        const Formula = this.Formula;
+        const cited = this.line.citedlines[0];
+        if (!cited || !cited.s) {
+            this.possible = false;
+            this.message = 'UI requires citing a universal statement.';
+            return;
+        }
+        const universal = Formula.from(cited.s);
+        if (universal.op != Formula.syntax.symbols.FORALL) {
+            this.possible = false;
+            this.message = 'UI requires a ∀-statement as the premise.';
+            return;
+        }
+        const x = universal.boundvar;
+        const phi = universal.right;
+        const psi = this.resultf;
+        const conclusionTerms = psi.terms || [];
+        const allTerms = [...new Set([...conclusionTerms, x])];
+        let ok = false;
+        for (const t of allTerms) {
+            const instStr = phi.instantiate(x, t);
+            const inst = Formula.from(instStr);
+            if (inst.normal == psi.normal) {
+                ok = true;
+                break;
+            }
+        }
+        if (!ok) {
+            this.possible = false;
+            this.message = 'conclusion is not a uniform substitution instance.';
+        }
+    }
+
     checkRestrictions() {
         const Formula = this.Formula;
         // rule must have a restriction
@@ -1386,6 +1421,7 @@ export class formFit {
         this.checkSubDerivs();
         this.checkDiffersBy();
         this.checkRestrictions();
+        this.checkUI();
         const newresult = this.checkNewness();
         if (!newresult) {
             if (this.message != '') { this.message += '; '; }

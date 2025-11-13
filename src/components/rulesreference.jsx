@@ -160,6 +160,8 @@ export default function RulesReference() {
           <div><strong>•</strong> Type <strong>v</strong> for ∨ (disjunction)</div>
           <div><strong>•</strong> Type <strong>{'>'}</strong> or <strong>→</strong> or <strong>--&gt;</strong> for ⊃ (conditional)</div>
           <div><strong>•</strong> Type <strong>==</strong> for ≡ (biconditional)</div>
+          <div><strong>•</strong> Type <strong>all</strong> for ∀ (universal quantifier)</div>
+          <div><strong>•</strong> Type <strong>some</strong> for ∃ (existential quantifier)</div>
         </Box>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
           Navigation

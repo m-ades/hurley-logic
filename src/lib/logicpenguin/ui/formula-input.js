@@ -304,10 +304,12 @@ export default class FormulaInput {
 
         if (e.key == '=') {
             // == becomes biconditional
-            if (/=$/.test(this.value.substr(0,this.selectionStart))) {
+            const before = this.value.substr(0, this.selectionStart);
+            if (/=\s*$/.test(before)) {
                 e.preventDefault();
-                this.autoChange(/\s*=$/,'','',/^\s*/,'');
+                this.autoChange(/\s*=\s*$/,'','',/^\s*/,'');
                 this.insOp('IFF');
+                return;
             } else
             // /= becomes nonindentity
             if (/\/$/.test(this.value.substr(0,this.selectionStart))) {
@@ -328,11 +330,12 @@ export default class FormulaInput {
                     const regex = new RegExp('\\s*' + this.symbols.NOT + '$');
                     this.autoChange(regex,' ','≠ ',/^\s*/,'');
                 }
-            } else if (!(this?.classList.contains('justification'))) {
-                // regular = is padded with spaces, except when justifying
-                e.preventDefault();
-                this.autoChange(/\s*$/,' ','= ',/^\s*/,'');
             }
+            // } else if (!(this?.classList.contains('justification'))) {
+            //     // regular = is padded with spaces, except when justifying
+            //     e.preventDefault();
+            //     this.autoChange(/\s*$/,' ','= ',/^\s*/,'');
+            // }
         }
 
         // double ampersands = conjunction
@@ -428,23 +431,36 @@ export default class FormulaInput {
             this.autoChange(/-+$/,'', nots, null, null);
         }
 
-        // quantifiers, etc. if in predicate mode
-        if (this.pred) {
-            // DISABLED: Auto-convert 'A' to ∀ - users can type 'A' normally
-            // To insert ∀, use the symbol bar or type it directly
-            // if (e.key == 'A' &&
-            //     (this.syntax.notation.quantifierForm.search('\\?') == -1) &&
-            //     (this.value.at(this.selectionStart -1 ) != 'T') &&
-            //     this.selectionStart === 0) {
-            //     e.preventDefault();
-            //     this.insOp('FORALL');
-            // }
-            // E cannot turn to ∃ in justifications for Elim rules
-            if ((e.key == 'E') && !this.classList.contains("justification")) {
+        // 'all' becomes ∀
+        if ((e.key == 'l' || e.key == 'L') && 
+            !this.classList.contains("justification")) {
+            const before = this.value.substr(0, this.selectionStart);
+
+            const textWithKey = before + e.key.toLowerCase();
+            if (/all$/i.test(textWithKey)) {
                 e.preventDefault();
-                this.insOp('EXISTS');
+                // gets rid of 'al'
+                this.autoChange(/al$/i, '', '', /^\s*/, '');
+                this.insOp('FORALL');
+                return;
             }
-            // flip  '∀' back to 'A' back to 'Ass'
+        }
+        // 'some' becomes ∃
+        if ((e.key == 'e' || e.key == 'E') && 
+            !this.classList.contains("justification")) {
+            const before = this.value.substr(0, this.selectionStart);
+            const textWithKey = before + e.key.toLowerCase();
+            if (/some$/i.test(textWithKey)) {
+                e.preventDefault();
+                // get rid of 'som'
+                this.autoChange(/som$/i, '', '', /^\s*/, '');
+                this.insOp('EXISTS');
+                return;
+            }
+        }
+
+        if (this.pred) {
+            // allow using A and E for predicates
             if (e.key == 's' || e.key == 'S') {
                 if (this.value.at(this.selectionStart - 1) == '∀') {
                     e.preventDefault();
