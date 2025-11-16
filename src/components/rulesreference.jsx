@@ -1,15 +1,16 @@
 import { useState } from 'react'
-import { Box, Typography, IconButton } from '@mui/material'
+import { Box, Typography, IconButton, Drawer, Fab } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import MenuBookIcon from '@mui/icons-material/MenuBook'
 
-function RulesCard({ title, children, defaultExpanded = true }) {
+function RulesCard({ title, children, defaultExpanded = false }) {
   const [expanded, setExpanded] = useState(defaultExpanded)
 
   return (
     <Box
       sx={{
-        width: '380px',
+        width: { xs: '100%', md: '380px' },
         mb: 1,
       }}
     >
@@ -72,23 +73,17 @@ function RulesCard({ title, children, defaultExpanded = true }) {
 }
 
 export default function RulesReference() {
-  return (
+  const [mobileOpen, setMobileOpen] = useState(false)
+  
+  const rulesContent = (
     <Box
       sx={{
-        position: 'fixed',
-        right: 16,
-        top: 16,
-        transform: 'scale(0.85)',
-        transformOrigin: 'top right',
-        zIndex: 100,
-        maxHeight: '90vh',
+        height: '100%',
         overflowY: 'auto',
-        borderRight: 1,
-        borderColor: 'divider',
-        pr: 2,
+        p: 2,
       }}
     >
-      <RulesCard title="Rules of Reference">
+      <RulesCard title="Rules of Reference" defaultExpanded={false}>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
           Rules of Implication
         </Typography>
@@ -121,7 +116,7 @@ export default function RulesReference() {
         </Box>
       </RulesCard>
       
-      <RulesCard title="Predicate Logic Rules">
+      <RulesCard title="Predicate Logic Rules" defaultExpanded={false}>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
           Predicate Logic Rules
         </Typography>
@@ -172,6 +167,75 @@ export default function RulesReference() {
         </Box>
       </RulesCard>
     </Box>
+  )
+  
+  return (
+    <>
+      {/* Desktop: Fixed panel */}
+      <Box
+        sx={{
+          position: 'fixed',
+          right: { xs: 8, md: 16 },
+          top: { xs: 8, md: 16 },
+          transform: { xs: 'none', md: 'scale(0.85)' },
+          transformOrigin: 'top right',
+          zIndex: 100,
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          borderRight: 1,
+          borderColor: 'divider',
+          pr: { xs: 1, md: 2 },
+          display: { xs: 'none', md: 'block' },
+        }}
+      >
+        {rulesContent}
+      </Box>
+      
+      {/* Mobile: Floating action button */}
+      <Fab
+        color="primary"
+        aria-label="rules"
+        onClick={() => setMobileOpen(true)}
+        sx={{
+          position: 'fixed',
+          bottom: 16,
+          right: 16,
+          zIndex: 1000,
+          display: { xs: 'flex', md: 'none' },
+          backgroundColor: '#8155ba',
+          '&:hover': {
+            backgroundColor: '#6a4499',
+          },
+        }}
+      >
+        <MenuBookIcon />
+      </Fab>
+      
+      {/* Mobile: Drawer */}
+      <Drawer
+        anchor="right"
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        sx={{
+          display: { xs: 'block', md: 'none' },
+          '& .MuiDrawer-paper': {
+            width: { xs: '85%', sm: '400px' },
+            maxWidth: '400px',
+          },
+        }}
+      >
+        <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h6">Rules Reference</Typography>
+          <IconButton onClick={() => setMobileOpen(false)}>
+            <ExpandLessIcon />
+          </IconButton>
+        </Box>
+        {rulesContent}
+      </Drawer>
+    </>
   )
 }
 

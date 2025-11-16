@@ -23,14 +23,14 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
       <RulesReference />
       <Box
         sx={{
-          transform: 'scale(0.85)',
+          transform: { xs: 'none', md: 'scale(0.85)' },
           transformOrigin: 'top center',
-          width: '117.65%', 
-          marginLeft: '-8.825%',
+          width: { xs: '100%', md: '117.65%' }, 
+          marginLeft: { xs: 0, md: '-8.825%' },
           position: 'relative',
         }}
       >
-        <Container maxWidth="lg" sx={{ py: 4, position: 'relative', zIndex: 1, mx: 'auto' }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 }, position: 'relative', zIndex: 1, mx: 'auto', px: { xs: 1, sm: 2, md: 4 } }}>
           <Box
             sx={{
               position: 'sticky',
@@ -46,20 +46,20 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
               sx={{
                 borderBottom: '1px solid',
                 borderColor: 'divider',
-                width: 'calc(100% - 210px)',
+                width: { xs: '100%', md: 'calc(100% - 210px)' },
                 pb: 2,
                 mb: 2,
               }}
             >
-              <Typography variant="h5" gutterBottom sx={{ color: 'rgba(0, 0, 0, 0.9)' }}>
+              <Typography variant="h5" gutterBottom sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
                 {title}
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-                <Typography variant="h6" sx={{ color: 'rgba(0, 0, 0, 0.9)' }}>
+                <Typography variant="h6" sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1rem', md: '1.25rem' } }}>
                   <span style={scoreStyle}>{score}</span> / {total}
                 </Typography>
                 {completedProofs.has(currentProofId) && (
-                  <CheckCircleIcon sx={{ color: '#beafc2', fontSize: 28 }} />
+                  <CheckCircleIcon sx={{ color: '#beafc2', fontSize: { xs: 20, md: 28 } }} />
                 )}
               </Box>
             </Box>

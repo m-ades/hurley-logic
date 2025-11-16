@@ -18,6 +18,80 @@ export default class DerivationHardegree extends DerivationExercise {
 
   constructor() {
     super();
+    this.isLPReady = false;
+    this._isRestoring = false;
+    this._stateChangeHooksInstalled = false;
+  }
+
+  connectedCallback() {
+    // call parent connectedCallback if it exists (custom elements use super)
+    if (super.connectedCallback) {
+      super.connectedCallback();
+    }
+
+    // oly emit ready if not already ready (to avoid duplicate events)
+    if (!this.isLPReady) {
+      this.isLPReady = true;
+      this.dispatchEvent(new Event("LP-ready", { bubbles: false }));
+    }
+
+  }
+
+  /**
+   load new derivation problem 
+   */
+  loadProblem(problem, options = {}) {
+    const finalOptions = Object.assign(
+      {
+        notation: "hardegree",
+        checklines: true,
+        pred: false,
+        identity: false,
+      },
+      options
+    );
+    this.innerHTML = "";
+    this.makeProblem(problem, finalOptions, "check answer"); // logicpenguin api for now
+    this.myproblemtype = "derivation-hardegree";
+    this.myquestion = problem;
+    this.myanswer = null; // match model solution later
+  }
+
+  async checkLines() {
+    if (!this.options.checklines) return;
+    
+    this.markLinesAsChecking();
+    
+    const { default: hardegreeDerivCheck } = 
+        await import('../checkers/derivation-hardegree.js');
+    
+    const ind = await hardegreeDerivCheck(
+      this.myquestion,
+      this.myanswer,
+      this.getAnswer(),
+      false,
+      -1,
+      this.options
+    );
+    
+    ind.successstatus = 'edited';
+    ind.savedstatus = 'unsaved';
+    ind.fromautocheck = true;
+    
+    if (!this._isRestoring) {
+      this.setIndicator(ind);
+    }
+  }
+
+  //restore a previously saved state snapshot, wrap restoreState
+  setStateSnapshot(savedState) {
+    if (!savedState || typeof this.restoreState !== "function") return;
+    this._isRestoring = true;
+    try {
+      this.restoreState(savedState);
+    } finally {
+      this._isRestoring = false;
+    }
   }
 
   addSubDerivHook(subderiv) {
@@ -192,4 +266,7 @@ export default class DerivationHardegree extends DerivationExercise {
 
 }
 
-customElements.define("derivation-hardegree", DerivationHardegree);
+// only register if not already registered (prevents HMR errors)
+if (!customElements.get("derivation-hardegree")) {
+  customElements.define("derivation-hardegree", DerivationHardegree);
+}

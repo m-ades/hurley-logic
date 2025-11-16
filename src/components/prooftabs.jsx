@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Box, Stack, Tabs, Tab, Typography } from '@mui/material'
+import * as React from 'react'
+import { Box, Stack, Tabs, Tab, Typography, useTheme, useMediaQuery } from '@mui/material'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import ProofEditor from './proofeditor.jsx'
 import { PROOFS } from '../proofs.js'
@@ -16,7 +17,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ pl: 3, pr: 3, pt: 0, pb: 0, overflowX: 'auto', minWidth: 0 }}>
+        <Box sx={{ pl: { xs: 0, md: 3 }, pr: { xs: 0, md: 3 }, pt: { xs: 2, md: 0 }, pb: 0, overflowX: 'auto', minWidth: 0, width: '100%' }}>
           {children}
         </Box>
       )}
@@ -39,22 +40,51 @@ export default function ProofTabs({
   getSavedProofState,
   handleProofStateChange
 }) {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const proofRefs = React.useRef({})
+  
+  // saves state when switching tabs
+  const handleTabChange = (e, newValue) => {
+    // save current answer's state before switching
+    const currentProof = PROOFS[currentProofIndex]
+    if (currentProof) {
+      const proofEditorRef = proofRefs.current[currentProof.id]
+      if (proofEditorRef) {
+        const derivEl = proofEditorRef.querySelector('derivation-hardegree')
+        if (derivEl?.getState && !derivEl._isRestoring) {
+          try {
+            handleProofStateChange(currentProof.id, derivEl.getState())
+          } catch (err) {
+            // ignore
+          }
+        }
+      }
+    }
+    onProofIndexChange(newValue)
+  }
+  
   return (
-    <Box sx={{ flexGrow: 1, display: 'flex', mt: 3 }}>
+    <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: { xs: 'column', md: 'row' }, mt: 3 }}>
       <Tabs
-        orientation="vertical"
+        orientation={isMobile ? 'horizontal' : 'vertical'}
         variant="scrollable"
         value={currentProofIndex}
-        onChange={(e, newValue) => onProofIndexChange(newValue)}
+        onChange={handleTabChange}
         aria-label="Problem tabs"
         textColor="primary"
         indicatorColor="primary"
         sx={{ 
-          borderRight: 1, 
+          borderRight: { xs: 0, md: 1 },
+          borderBottom: { xs: 1, md: 0 },
           borderColor: 'divider',
+          minWidth: { xs: 'auto', md: 200 },
+          maxWidth: { xs: '100%', md: 200 },
           '& .MuiTab-root': {
             color: '#beafc2',
             transition: 'all 0.2s ease',
+            minWidth: { xs: 'auto', md: 200 },
+            fontSize: { xs: '0.875rem', md: '1rem' },
             '&:hover': {
               color: '#8155ba',
               backgroundColor: 'rgba(129, 85, 186, 0.08)',
@@ -112,13 +142,15 @@ export default function ProofTabs({
                   {proof.description}
                 </Typography>
               )}
-              <ProofEditor 
-                key={`proof-${proof.id}`} 
-                proof={proof} 
-                onProofComplete={onProofComplete}
-                savedState={getSavedProofState(proof.id)}
-                onStateChange={(state) => handleProofStateChange(proof.id, state)}
-              />
+              <div ref={el => { if (el) proofRefs.current[proof.id] = el }}>
+                <ProofEditor 
+                  key={`proof-${proof.id}`} 
+                  proof={proof} 
+                  onProofComplete={onProofComplete}
+                  savedState={getSavedProofState(proof.id)}
+                  onStateChange={(state) => handleProofStateChange(proof.id, state)}
+                />
+              </div>
             </Box>
           </Stack>
         </TabPanel>
