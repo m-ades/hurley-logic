@@ -247,6 +247,12 @@
     display: block !important;
 }
 
+.logicpenguin derivation-hardegree .derivationline.lastpremise .jbwrap input.justification {
+    pointer-events: none;
+    cursor: default;
+    user-select: none;
+}
+
 /* hide the mainderivation showline from appearing as a numbered proof line */
 .logicpenguin sub-derivation.mainderivation div.derivationshowline {
     display: none !important;

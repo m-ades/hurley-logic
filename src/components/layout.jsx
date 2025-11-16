@@ -23,6 +23,45 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
       <RulesReference />
       <Box
         sx={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          backgroundColor: 'transparent',
+          pt: 2,
+          pb: 2,
+        }}
+      >
+        <Container maxWidth="lg" sx={{ mx: 'auto', px: { xs: 1, sm: 2, md: 4 } }}>
+          <Box
+            sx={{
+              width: { xs: '100%', md: 'calc(100% - 210px)' },
+              pb: 2,
+              }}
+            >
+            <Typography variant="h5" gutterBottom sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
+                {title}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
+              <Typography variant="h6" sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1rem', md: '1.25rem' } }}>
+                  <span style={scoreStyle}>{score}</span> / {total}
+                </Typography>
+                {completedProofs.has(currentProofId) && (
+                <CheckCircleIcon sx={{ color: '#beafc2', fontSize: { xs: 20, md: 28 } }} />
+                )}
+            </Box>
+          </Box>
+        </Container>
+      </Box>
+      <Box
+        sx={{
+          height: { xs: '120px', md: '140px' },
+          flexShrink: 0,
+        }}
+      />
+      <Box
+        sx={{
           transform: { xs: 'none', md: 'scale(0.85)' },
           transformOrigin: 'top center',
           width: { xs: '100%', md: '117.65%' }, 
@@ -31,39 +70,6 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
         }}
       >
         <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 }, position: 'relative', zIndex: 1, mx: 'auto', px: { xs: 1, sm: 2, md: 4 } }}>
-          <Box
-            sx={{
-              position: 'sticky',
-              top: 0,
-              zIndex: 100,
-              backgroundColor: 'transparent',
-              pt: 2,
-              pb: 2,
-              mb: 2,
-            }}
-          >
-            <Box
-              sx={{
-                borderBottom: '1px solid',
-                borderColor: 'divider',
-                width: { xs: '100%', md: 'calc(100% - 210px)' },
-                pb: 2,
-                mb: 2,
-              }}
-            >
-              <Typography variant="h5" gutterBottom sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-                {title}
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-                <Typography variant="h6" sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1rem', md: '1.25rem' } }}>
-                  <span style={scoreStyle}>{score}</span> / {total}
-                </Typography>
-                {completedProofs.has(currentProofId) && (
-                  <CheckCircleIcon sx={{ color: '#beafc2', fontSize: { xs: 20, md: 28 } }} />
-                )}
-              </Box>
-            </Box>
-          </Box>
           {children}
         </Container>
       </Box>

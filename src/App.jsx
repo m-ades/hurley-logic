@@ -39,6 +39,14 @@ export default function App() {
             0% { transform: scale(0.7); }
             100% { transform: scale(1); }
           }
+          html, body {
+            overflow: hidden;
+            height: 100%;
+          }
+          #root {
+            height: 100%;
+            overflow: hidden;
+          }
         `}
       </style>
     </ThemeProvider>

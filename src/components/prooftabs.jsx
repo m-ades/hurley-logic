@@ -17,7 +17,17 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ pl: { xs: 0, md: 3 }, pr: { xs: 0, md: 3 }, pt: { xs: 2, md: 0 }, pb: 0, overflowX: 'auto', minWidth: 0, width: '100%' }}>
+        <Box sx={{ 
+          pl: { xs: 0, md: 3 }, 
+          pr: { xs: 0, md: 3 }, 
+          pt: { xs: 2, md: 0 }, 
+          pb: 0, 
+          overflowX: 'auto', 
+          minWidth: 0, 
+          width: '100%',
+          height: 'calc(100vh - 200px)',
+          overflowY: 'auto',
+        }}>
           {children}
         </Box>
       )}
