@@ -1,0 +1,213 @@
+async function loadJsPDF() {
+  // dynamic import from npm package
+  try {
+    const { jsPDF } = await import('jspdf')
+    return jsPDF
+  } catch (error) {
+    // if that fails, load from public folder
+    if (window.jspdf?.jsPDF) return window.jspdf.jsPDF
+    if (window.jsPDF) return window.jsPDF
+
+    // if that fails, load from script tag
+    await new Promise((resolve, reject) => {
+      const baseUrl = import.meta.env.BASE_URL || '/'
+      const script = document.createElement("script")
+      script.src = `${baseUrl}js/jspdf.umd.min.js`
+      script.onload = () => {
+        setTimeout(() => {
+          if (window.jspdf?.jsPDF) resolve()
+          else if (window.jsPDF) resolve()
+          else reject(new Error("jsPDF not found after script load"))
+        }, 100)
+      }
+      script.onerror = () => {
+        reject(new Error("Failed to load jsPDF from both npm and public folder"))
+      }
+      document.head.appendChild(script)
+    })
+
+    if (window.jspdf?.jsPDF) return window.jspdf.jsPDF
+    if (window.jsPDF) return window.jsPDF
+    throw new Error("jsPDF not available")
+  }
+}
+
+function arrayBufferToBase64(buffer) {
+  const bytes = new Uint8Array(buffer)
+  let binary = ""
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+}
+
+let cachedFont = null
+
+async function registerFont(doc) {
+  if (!cachedFont) {
+    try {
+      const baseUrl = import.meta.env.BASE_URL || '/'
+      let fontPath = `${baseUrl}fonts/NotoSansMono-Regular.ttf`
+      if (baseUrl.endsWith('/')) {
+        fontPath = `${baseUrl.slice(0, -1)}/fonts/NotoSansMono-Regular.ttf`
+      } else {
+        fontPath = `${baseUrl}fonts/NotoSansMono-Regular.ttf`
+      }
+      
+      const res = await fetch(fontPath)
+      if (!res.ok) {
+        const res2 = await fetch('/fonts/NotoSansMono-Regular.ttf')
+        if (!res2.ok) {
+          console.warn(`Font not found at ${fontPath} or /fonts/, using default font`)
+          return
+        }
+        const buf = await res2.arrayBuffer()
+        cachedFont = arrayBufferToBase64(buf)
+      } else {
+        const buf = await res.arrayBuffer()
+        cachedFont = arrayBufferToBase64(buf)
+      }
+    } catch (error) {
+      console.warn('Failed to load custom font, using default:', error)
+      return
+    }
+  }
+
+  if (cachedFont) {
+    try {
+      doc.addFileToVFS("NotoSansMono.ttf", cachedFont)
+      doc.addFont("NotoSansMono.ttf", "NotoMono", "normal")
+      doc.setFont("NotoMono")
+    } catch (error) {
+      console.error("Font registration error:", error)
+    }
+  }
+}
+
+function extractLines(savedState, startIndex, premises) {
+  const out = []
+  let counter = startIndex
+  const premisesSet = new Set(premises.map(p => p.trim()))
+
+  function walk(parts, depth = 0) {
+    parts.forEach(item => {
+      if (item.s !== undefined) {
+        const trimmed = item.s.trim()
+        if (premisesSet.has(trimmed)) return // skip premises
+
+        out.push({
+          left: `${counter}. ${trimmed}`,
+          right: item.j?.trim() || ""
+        })
+
+        counter++
+      }
+      // Nested block
+      else if (item.parts) {
+        walk(item.parts, depth + 1)
+      }
+    })
+  }
+
+  walk(savedState?.ans?.parts || [])
+  return out
+}
+
+
+export async function exportWorksheetPDF(worksheet) {
+  try {
+    const jsPDF = await loadJsPDF()
+    const doc = new jsPDF({ unit: "pt", format: "letter" })
+    await registerFont(doc)
+
+    try {
+      doc.setFont("NotoMono")
+    } catch (e) {
+      doc.setFont("helvetica")
+    }
+    doc.setFontSize(12)
+
+    let y = 60
+    const lh = 18
+    const marginLeft = 40
+
+    const write = (x, text) => {
+      if (y > 760) {
+        doc.addPage()
+        y = 60
+        try {
+          doc.setFont("NotoMono")
+        } catch (e) {
+          doc.setFont("helvetica")
+        }
+        doc.setFontSize(12)
+      }
+      doc.text(text, x, y)
+    }
+
+  doc.setFontSize(16)
+  write(marginLeft, `WORKSHEET ${worksheet.worksheetId}`)
+  doc.setFontSize(12)
+  y += lh * 2
+
+  worksheet.proofs.forEach(proof => {
+    if (!proof.savedState?.ans?.parts) return // skip untouched proofs
+
+    let index = 1
+
+    const lastPremiseIdx = proof.premises.length - 1 // get last premise index
+    const lastPremise = proof.premises[lastPremiseIdx]
+//font setup
+    try {
+      doc.setFont("NotoMono")
+    } catch {
+      doc.setFont("helvetica")
+    }
+    doc.setFontSize(12)
+    doc.text("A", -9999, -9999)
+
+    // align based on last premise
+    const sampleLeft = `${index + lastPremiseIdx}. ${lastPremise}`
+    let leftWidth = doc.getTextWidth(sampleLeft)
+
+    // fallback if small width
+    if (!leftWidth || !isFinite(leftWidth) || leftWidth < 20) {
+      leftWidth = 20
+    }
+    const MIN_COLUMN = 260
+    const columnX = marginLeft + Math.max(leftWidth + 12, MIN_COLUMN)
+
+    // print premises with conclusion aligned on last premise
+    proof.premises.forEach((prem, i) => {
+      const left = `${index}. ${prem}`
+      if (i === lastPremiseIdx) {
+        write(marginLeft, left)
+        write(columnX, `// ${proof.conclusion}`)
+      } else {
+        write(marginLeft, left)
+      }
+      y += lh
+      index++
+    })
+
+    // line inputs
+    const studentLines = extractLines(proof.savedState, index, proof.premises)
+
+    studentLines.forEach(line => {
+      write(marginLeft, line.left)
+      if (line.right) {
+        write(columnX, line.right)
+      }
+      y += lh
+    })
+
+    y += lh 
+  })
+
+    doc.save(`worksheet_${worksheet.worksheetId}.pdf`)
+  } catch (error) {
+    console.error('PDF export error:', error)
+    throw new Error(error?.message || error?.toString() || 'Failed to export PDF')
+  }
+}
+

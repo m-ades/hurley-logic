@@ -277,8 +277,12 @@ export default class FormulaInput {
 
         // v's and wedges become disjunctions
         if (e.key == 'v' || e.key == 'V' || e.key == '∨') {
-            // don't do when pasting
-            if (e.ctrlKey || e.metaKey) { return; }
+            if (e.ctrlKey || e.metaKey) {
+                return;
+            }
+            if (this.classList.contains('justification')) {
+                return; 
+            }
             e.preventDefault();
             this.insOp('OR');
             return;

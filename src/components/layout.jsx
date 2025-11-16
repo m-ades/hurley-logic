@@ -1,8 +1,9 @@
-import { Box, Container, Typography } from '@mui/material'
+import { Box, Container, Typography, Select, MenuItem, FormControl, IconButton } from '@mui/material'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import DownloadIcon from '@mui/icons-material/Download'
 import RulesReference from './rulesreference.jsx'
 
-export default function Layout({ title, score, total, scoreStyle, currentProofId, completedProofs, children }) {
+export default function Layout({ title, score, total, scoreStyle, currentProofId, completedProofs, children, worksheets, currentWorksheetIndex, onWorksheetIndexChange, onExportClick }) {
   return (
     <>
       <Box
@@ -38,17 +39,86 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
             sx={{
               width: { xs: '100%', md: 'calc(100% - 210px)' },
               pb: 2,
-              }}
-            >
+              ml: { xs: 0, md: 0 },
+            }}
+          >
             <Typography variant="h5" gutterBottom sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
                 {title}
               </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1, flexWrap: 'wrap' }}>
               <Typography variant="h6" sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1rem', md: '1.25rem' } }}>
                   <span style={scoreStyle}>{score}</span> / {total}
                 </Typography>
                 {completedProofs.has(currentProofId) && (
                 <CheckCircleIcon sx={{ color: '#beafc2', fontSize: { xs: 20, md: 28 } }} />
+                )}
+                {/* export to pdf */}
+                {onExportClick && (
+                  <IconButton
+                    onClick={onExportClick}
+                    sx={{
+                      color: 'rgba(0, 0, 0, 0.9)',
+                      fontSize: { xs: '1rem', md: '1.25rem' },
+                      padding: '0.5rem',
+                      '&:hover': {
+                        backgroundColor: 'rgba(129, 85, 186, 0.08)',
+                      },
+                    }}
+                    aria-label="Export PDF"
+                  >
+                    <DownloadIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
+                  </IconButton>
+                )}
+                {worksheets && (
+                  <FormControl sx={{ minWidth: 'auto', ml: 2 }}>
+                    <Select
+                      value={currentWorksheetIndex}
+                      onChange={(e) => onWorksheetIndexChange(e.target.value)}
+                      displayEmpty
+                      sx={{
+                        fontFamily: '"IBM Plex Sans", sans-serif',
+                        fontSize: '0.875rem',
+                        color: 'rgba(0, 0, 0, 0.9)',
+                        borderRadius: '50px',
+                        backgroundColor: 'transparent',
+                        boxShadow: '3px 3px 8px rgba(190, 190, 190, 0.4), -3px -3px 8px rgba(255, 255, 255, 0.5)',
+                        opacity: 0.9,
+                        padding: '0.75rem 1.5rem',
+                        height: 'auto',
+                        '& .MuiSelect-select': {
+                          padding: '0 !important',
+                          paddingRight: '2rem !important',
+                        },
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          border: 'none',
+                        },
+                        '&:hover': {
+                          opacity: 0.9,
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          border: 'none',
+                        },
+                        '& .MuiSelect-icon': {
+                          color: 'rgba(0, 0, 0, 0.9)',
+                          right: '0.75rem',
+                        },
+                      }}
+                    >
+                      {worksheets.map((worksheet, idx) => {
+                        const worksheetCompleted = worksheet.proofs.every(p => completedProofs.has(p.id));
+                        return (
+                          <MenuItem key={worksheet.id} value={idx} sx={{ fontFamily: '"IBM Plex Sans", sans-serif' }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                              <span>{worksheet.title}</span>
+                              {worksheetCompleted && (
+                                <CheckCircleIcon sx={{ color: '#beafc2', fontSize: 16 }} />
+                              )}
+                            </Box>
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
                 )}
             </Box>
           </Box>
@@ -56,20 +126,20 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
       </Box>
       <Box
         sx={{
-          height: { xs: '120px', md: '140px' },
+          height: { xs: '100px', md: '120px' },
           flexShrink: 0,
         }}
       />
       <Box
         sx={{
           transform: { xs: 'none', md: 'scale(0.85)' },
-          transformOrigin: 'top center',
+          transformOrigin: 'top left',
           width: { xs: '100%', md: '117.65%' }, 
-          marginLeft: { xs: 0, md: '-8.825%' },
+          marginLeft: { xs: 0, md: 0 },
           position: 'relative',
         }}
       >
-        <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 }, position: 'relative', zIndex: 1, mx: 'auto', px: { xs: 1, sm: 2, md: 4 } }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 }, position: 'relative', zIndex: 1, mx: 0, px: { xs: 1, sm: 2, md: 4 }, ml: { xs: 0, md: 'auto' }, mr: { xs: 0, md: 210 } }}>
           {children}
         </Container>
       </Box>

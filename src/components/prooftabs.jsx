@@ -3,7 +3,6 @@ import * as React from 'react'
 import { Box, Stack, Tabs, Tab, Typography, useTheme, useMediaQuery } from '@mui/material'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import ProofEditor from './proofeditor.jsx'
-import { PROOFS } from '../proofs.js'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -43,6 +42,7 @@ function a11yProps(index) {
 }
 
 export default function ProofTabs({ 
+  proofs,
   currentProofIndex, 
   onProofIndexChange, 
   completedProofs, 
@@ -57,7 +57,7 @@ export default function ProofTabs({
   // saves state when switching tabs
   const handleTabChange = (e, newValue) => {
     // save current answer's state before switching
-    const currentProof = PROOFS[currentProofIndex]
+    const currentProof = proofs[currentProofIndex]
     if (currentProof) {
       const proofEditorRef = proofRefs.current[currentProof.id]
       if (proofEditorRef) {
@@ -75,7 +75,7 @@ export default function ProofTabs({
   }
   
   return (
-    <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: { xs: 'column', md: 'row' }, mt: 3 }}>
+    <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: { xs: 'column', md: 'row' }, mt: 0 }}>
       <Tabs
         orientation={isMobile ? 'horizontal' : 'vertical'}
         variant="scrollable"
@@ -85,9 +85,8 @@ export default function ProofTabs({
         textColor="primary"
         indicatorColor="primary"
         sx={{ 
-          borderRight: { xs: 0, md: 1 },
-          borderBottom: { xs: 1, md: 0 },
-          borderColor: 'divider',
+          borderRight: { xs: 0, md: 0 },
+          borderBottom: { xs: 0, md: 0 },
           minWidth: { xs: 'auto', md: 200 },
           maxWidth: { xs: '100%', md: 200 },
           '& .MuiTab-root': {
@@ -109,12 +108,12 @@ export default function ProofTabs({
           },
         }}
       >
-        {PROOFS.map((proof, idx) => (
+        {proofs.map((proof, idx) => (
           <Tab
             key={proof.id}
             label={
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, width: '100%' }}>
-                <span>Question {proof.id}</span>
+                <span>Question {proof.questionId || proof.id}</span>
                 {completedProofs.has(proof.id) && (
                   <CheckCircleIcon sx={{ color: '#beafc2', fontSize: 16 }} />
                 )}
@@ -140,12 +139,12 @@ export default function ProofTabs({
           />
         ))}
       </Tabs>
-      {PROOFS.map((proof, idx) => (
+      {proofs.map((proof, idx) => (
         <TabPanel key={proof.id} value={currentProofIndex} index={idx}>
           <Stack spacing={3} sx={{ minWidth: 0 }}>
             <Box sx={{ minWidth: 0 }}>
               <Typography variant="h6" gutterBottom sx={{ color: 'rgba(0, 0, 0, 0.9)', fontFamily: '"IBM Plex Sans", sans-serif' }}>
-                Question {proof.id}
+                Question {proof.questionId || proof.id}
               </Typography>
               {proof.description && (
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 3, fontFamily: '"IBM Plex Sans", sans-serif' }}>

@@ -123,8 +123,8 @@ export default function RulesReference() {
         <Box component="div" sx={{ mb: 1.5, fontSize: '0.85rem' }}>
           <div><strong>UI:</strong> (x)Fx / Fy</div>
           <div><strong>UG:</strong> Fy / (x)Fx</div>
-          <div><strong>EI:</strong> (∃x)Fx / Fy</div>
-          <div><strong>EG:</strong> Fy / (∃x)Fx</div>
+          <div><strong>EI:</strong> (∃x)Fx / Fn</div>
+          <div><strong>EG:</strong> Fn / (∃x)Fx</div>
         </Box>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
           Change of Quantifier (CQ)
@@ -179,7 +179,7 @@ export default function RulesReference() {
           top: { xs: 8, md: 16 },
           transform: { xs: 'none', md: 'scale(0.85)' },
           transformOrigin: 'top right',
-          zIndex: 100,
+          zIndex: 101,
           maxHeight: '90vh',
           overflowY: 'auto',
           borderRight: 1,
