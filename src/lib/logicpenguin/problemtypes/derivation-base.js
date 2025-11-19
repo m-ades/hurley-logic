@@ -20,10 +20,10 @@ export default class DerivationExercise extends LogicPenguinProblem {
         super();
     }
 
-    // return auto-check as off unless already specified
+    // return auto-check as on by default
     get autocheck() {
         if (!("_autocheck" in this)) {
-            this._autocheck = false;
+            this._autocheck = true;
         }
         return this._autocheck;
     }
@@ -621,20 +621,14 @@ export default class DerivationExercise extends LogicPenguinProblem {
         checking:       'thumbs_up_down',
         closederiv:     'format_indent_decrease',
         closemainderiv: 'check',
-        derivlinemenu:  'more_horiz',
         good:           'check',
         incomplete:     'incomplete_circle',
-        insertabove:    'expand_less',
-        insertbelow:    'expand_more',
-        insertSDabove:  'vertical_align_top',
-        insertSDbelow:  'vertical_align_bottom',
+        insertabove:    'arrow_upward',
+        insertbelow:    'arrow_downward',
         justificationerror: 'close',
         malfunction:    'close',
-        menucancel:     'close',
-        movemeabove:    'open_with',
-        movemebelow:    'open_with',
         multierror:     'close',
-        removeme:       'backspace',
+        removeme:       'delete',
         rmderiv:        'delete_forever',
         ruleerror:      'close',
         syntaxerror:    'close',
@@ -709,19 +703,6 @@ export class SubDerivation extends HTMLElement {
             }
         });
 
-        let addsubderivtext = 'add subderivation';
-        if (this.useShowLines) {
-            addsubderivtext = 'add showline + subderivation';
-        }
-        this.buttons.addsubderiv = addelem('div', this.buttons, {
-            classes: ['material-symbols-outlined'],
-            innerHTML: this.myprob.icons['addsubderiv'],
-            mysubderiv: this,
-            title: addsubderivtext,
-            onclick: function() {
-                this.mysubderiv.addSubderivation('', true);
-            }
-        });
 
         const isSubderiv =
             ((!this.useShowLines && this?.parentderiv) ||
@@ -760,9 +741,17 @@ export class SubDerivation extends HTMLElement {
             this.myprob.clToggle = addelem('div', this.buttons, {
                 classes: ['material-symbols-outlined','derivchecklinestoggle'],
                 myprob: this.myprob,
-                innerHTML: this.myprob.icons["autocheckoff"],
+                innerHTML: this.myprob.icons[this.myprob.autocheck ? "autocheckon" : "autocheckoff"],
                 title: 'toggle autochecking on/off'
             });
+            // Set initial classes based on autocheck state
+            if (this.myprob.autocheck) {
+                this.myprob.clToggle.classList.add('autocheckon');
+                this.myprob.clToggle.classList.remove('autocheckoff');
+            } else {
+                this.myprob.clToggle.classList.add('autocheckoff');
+                this.myprob.clToggle.classList.remove('autocheckon');
+            }
             if (this.myprob.options.checklines) {
                 this.myprob.clToggle.onclick = function(e) {
                     this.myprob.autocheck = (!this.myprob.autocheck);
@@ -848,50 +837,23 @@ export class SubDerivation extends HTMLElement {
             classes: ['derivlinebuttons']
         });
 
-        line.menuButton = addelem('div', line.buttons, {
-            classes: [ 'derivmenubutton' ],
-            onclick: function() {
-                this.classList.add("opened");
-            }
-        });
-        const icon = addelem('div', line.menuButton, {
-            classes: [ 'material-symbols-outlined' ],
-            innerHTML: this.myprob.icons['derivlinemenu'],
-            title: 'line menu'
-        });
-        // popup menu
-        const popUp = addelem('table', line.menuButton, {
-            classes: [ 'derivlinepopupmenu' ],
-            mywidg: line.menuButton,
-            onmouseleave: function() {
-                this.mywidg.classList.remove("opened");
-            }
-        });
-        const tbody = addelem('tbody', popUp, {});
+        // three tiny action buttons: insert above, insert below, delete
         const actions = SubDerivation.lineActions;
-        for (const actionname in actions) {
+        const actionNames = ['insertabove', 'insertbelow', 'removeme'];
+        
+        for (const actionname of actionNames) {
+            if (!actions[actionname]) continue;
             const action = actions[actionname];
-            const tre = addelem('tr', tbody, {});
-            const icontd = addelem('td', tre, {
-                innerHTML: '<div class="material-symbols-outlined">'
-                    + this.myprob.icons[actionname] + '</div>',
-                classes: [actionname],
+            const button = addelem('div', line.buttons, {
+                classes: [ 'derivlineactionbutton' ],
+                myline: line,
+                onclick: action.fn,
+                title: action.descr
             });
-            const descrtd = addelem('td', tre, {
-                innerHTML: action.descr,
+            const icon = addelem('div', button, {
+                classes: [ 'material-symbols-outlined' ],
+                innerHTML: this.myprob.icons[actionname]
             });
-            if (action.numinp) {
-                const ni = addelem('input',descrtd, {
-                    type: "number",
-                    myline: line,
-                    onchange: action.fn
-                });
-            } else {
-                icontd.myline = line;
-                icontd.onclick = action.fn;
-                descrtd.myline = line;
-                descrtd.onclick = action.fn;
-            }
         }
 
         // hide buttons in main derivation  unless no showlines
@@ -1380,8 +1342,6 @@ export class SubDerivation extends HTMLElement {
                 const nl = targderiv.addLine('', false);
                 // move line into place
                 targspot.parentNode.insertBefore(nl, targspot);
-                // close the menu asap
-                setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
                 if (nl.input) { nl.input.focus();}
             }
         },
@@ -1408,145 +1368,8 @@ export class SubDerivation extends HTMLElement {
                 } else {
                     targetP.parentNode.insertBefore(nl, targetP.nextSibling);
                 }
-                // close the menu asap
-                setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
                 // this will always add a blank line so no use making changed
                 if (nl.input) { nl.input.focus();}
-            }
-        },
-        insertSDabove: {
-            descr: 'insert subderivation above',
-            numinp: false,
-            fn: function(e) {
-                const line = this.myline;
-                let targ = line;
-                let targderiv = line.mysubderiv;
-                // for showlines, the derivation goes in parent
-                if (line.classList.contains("derivationshowline")) {
-                    targderiv = targ.mysubderiv.parentderiv;
-                    targ = targ.mysubderiv;
-                }
-                // new subderivation
-                const sd = targderiv.addSubderivation('', false);
-                // move into place
-                targ.parentNode.insertBefore(sd, targ);
-                // close the menu asap
-                setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
-                line.mysubderiv.myprob.makeChanged();
-                // focus on first input in new subderiv
-                const ii = sd.getElementsByClassName("derivationline");
-                if (ii?.[0]?.input) { ii[0].input.focus(); };
-            }
-        },
-        insertSDbelow: {
-            descr: 'insert subderivation below',
-            numinp: false,
-            fn: function(e) {
-                // check if closed if no showlines
-                let targetP = this.myline;
-                let targetSD = this.myline.mysubderiv;
-                if (targetSD.classList.contains("closed") && (!targetSD.useShowLines) &&
-                    targetSD?.parentderiv) {
-                    targetP = targetSD;
-                    targetSD = targetSD.parentderiv;
-                }
-                // add the subderivation
-                const sd = targetSD.addSubderivation('', false);
-                // put into place, for showline, it goes in parent
-                if (targetP.classList.contains("derivationshowline")) {
-                    targetP.mysubderiv.inner.insertBefore(sd,
-                        targetP.mysubderiv.inner.firstChild);
-                } else {
-                    targetP.parentNode.insertBefore(sd,
-                        targetP.nextSibling);
-                }
-                // close the menu asap
-                setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
-                this.myline.mysubderiv.myprob.makeChanged();
-                // focus first input
-                const ii = sd.getElementsByClassName("derivationline");
-                if (ii?.[0]?.input) { ii[0].input.focus(); };
-            }
-        },
-        movemeabove: {
-            descr: 'move above line:',
-            numinp: true,
-            fn: function(e) {
-                // figure out what should move
-                const linepicked = parseInt(this.value);
-                let targ = this.myline?.mysubderiv?.myprob?.linesByNum?.[linepicked];
-                if (!targ) {
-                    alert("No such line!");
-                    return;
-                }
-                if (targ?.input?.readOnly) {
-                    alert('You cannot move the line there.');
-                    return;
-                }
-                const isshow = this.myline.classList.contains("derivationshowline");
-                if (isshow) {
-                    if (!(confirm("Moving a showline moves its entire " +
-                        "subderivation. Do you want to move it?"))) {
-                        return;
-                    }
-                }
-                let movee = this.myline;
-                if (isshow) {
-                    movee = this.myline.mysubderiv;
-                }
-                // goes in parent if we are talking about a show line
-                // or a first line
-                if (targ.classList.contains("derivationshowline")) {
-                    targ = targ.mysubderiv;
-                }
-                if (targ.classList.contains("hypothesis")) {
-                    targ = targ.mysubderiv;
-                }
-                // actually do the move
-                targ.parentNode.insertBefore(movee, targ);
-                // close the menu asap
-                setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
-                this.myline.mysubderiv.myprob.makeChanged();
-            }
-        },
-        movemebelow: {
-            descr: 'move below line:',
-            numinp: true,
-            fn: function(e) {
-                // figure out what to move
-                const linepicked = parseInt(this.value);
-                const targ = this.myline?.mysubderiv?.myprob?.linesByNum?.[linepicked];
-                if (!targ) {
-                    alert("No such line!");
-                    return;
-                }
-                if ((targ.classList.contains('premiseline')) &&
-                    (!targ.classList.contains('lastpremise')) ||
-                    (targ.mysubderiv.useShowLines)) {
-                    alert('You cannot edit the argument itself.');
-                    return;
-                }
-                const isshow = this.myline.classList.contains("derivationshowline");
-                if (isshow) {
-                    if (!(confirm("Moving a showline moves its entire " +
-                        "subderivation. Do you want to move it?"))) {
-                        return;
-                    }
-                }
-                let movee = this.myline;
-                if (isshow) {
-                    movee = this.myline.mysubderiv;
-                }
-                // do the move
-                if (targ.classList.contains("derivationshowline")) {
-                    targ.mysubderiv.inner.insertBefore(movee,
-                        targ.mysubderiv.inner.firstChild);
-                } else {
-                    targ.parentNode.insertBefore(movee, targ.nextSibling);
-                }
-                // close the menu asap
-                setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
-                this.myline.mysubderiv.myprob.makeChanged();
             }
         },
         removeme: {
@@ -1569,22 +1392,19 @@ export class SubDerivation extends HTMLElement {
                 );
                 this.myline.mysubderiv.myprob.makeChanged();
             }
-        },
-        menucancel: {
-            descr: 'cancel',
-            numinp: false,
-            fn: function(e) {
-                // just close the menu
-                setTimeout(() => (this.myline.menuButton.classList.remove("opened")), 0);
-            }
         }
     }
 
     static lineStatusUpdate(icon) {
         const prob = this.myprob;
-        this.innerHTML = '<div class="material-symbols-outlined ' +
-            icon + '">' + prob.icons[icon] + '</div>';
-        this.title = prob.tooltips[icon];
+        if (icon === 'checking') {
+            this.innerHTML = '<svg class="checking" viewBox="25 25 50 50"><circle cx="50" cy="50" r="20"></circle></svg>';
+            this.title = prob.tooltips[icon] || 'checking';
+        } else {
+            this.innerHTML = '<div class="material-symbols-outlined ' +
+                icon + '">' + prob.icons[icon] + '</div>';
+            this.title = prob.tooltips[icon];
+        }
     }
 
     static moveHorizontally(e) {

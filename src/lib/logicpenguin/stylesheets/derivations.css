@@ -161,7 +161,6 @@
 /* LINE BUTTONS */
 
 /* common */
-.logicpenguin .derivationline .derivmenubutton > .material-symbols-outlined ,
 .logicpenguin sub-derivation .derivlinebuttons .derivlinecheck div {
     border-radius: 5px;
     padding: 2px;
@@ -175,95 +174,44 @@
     white-space: nowrap;
 }
 
-/* popup menu button */
+/* line action buttons */
 
-.logicpenguin sub-derivation .derivationline .jbwrap div .derivmenubutton {
+.logicpenguin sub-derivation .derivationline .jbwrap div .derivlineactionbutton {
     position: relative;
-    padding-left: 0.5ex;
+    padding-left: 0.3ex;
     top: 0.2rem;
     user-select: none;
+    display: inline-block;
 }
 
-.logicpenguin sub-derivation .derivationline .derivmenubutton > .material-symbols-outlined {
+.logicpenguin sub-derivation .derivationline .derivlineactionbutton > .material-symbols-outlined {
     cursor: pointer;
-    color: rgba(0, 0, 0, 0.9);
+    color: rgba(0, 0, 0, 0.7);
     background: transparent;
     border: none;
-    border-radius: 50px;
-    box-shadow: 2px 2px 5px rgba(190, 190, 190, 0.3), -2px -2px 5px rgba(255, 255, 255, 0.5);
-    transition: all 0.6s ease;
+    border-radius: 4px;
+    padding: 2px;
+    transition: all 0.2s ease;
     font-family: 'Material Symbols Outlined', sans-serif;
-    font-variation-settings: 'FILL' 0, 'wght' 100, 'GRAD' 0, 'opsz' 24;
+    font-variation-settings: 'FILL' 0, 'wght' 100, 'GRAD' 0, 'opsz' 20;
     font-weight: 100;
+    font-size: 16px;
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.logicpenguin .derivationline .derivmenubutton:hover > .material-symbols-outlined {
-    opacity: 0.9;
-    box-shadow: 1.5px 1.5px 4px rgba(190, 190, 190, 0.3), -1.5px -1.5px 4px rgba(255, 255, 255, 0.5);
+.logicpenguin sub-derivation .derivationline .derivlineactionbutton:hover > .material-symbols-outlined {
+    color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
-.logicpenguin .derivationline .derivmenubutton:focus > .material-symbols-outlined,
-.logicpenguin .derivationline .derivmenubutton:active > .material-symbols-outlined {
-    opacity: 0.85;
-    box-shadow: 1px 1px 3px rgba(190, 190, 190, 0.3), -1px -1px 3px rgba(255, 255, 255, 0.5);
+.logicpenguin sub-derivation .derivationline .derivlineactionbutton:active > .material-symbols-outlined {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* POPUP MENU ITSELF */
-
-.logicpenguin sub-derivation
-    .jbwrap div .derivmenubutton .derivlinepopupmenu {
-    position: absolute;
-    top: 2ex;
-    left: 1ex;
-    display: none;
-    background-color: var(--lpgray5);
-    z-index: 12;
-    font-size: 85%;
-    cursor: pointer;
-    border-spacing: 0;
-    border-collapse: collapse;
-}
-
-.logicpenguin sub-derivation
-    .jbwrap div .derivmenubutton .derivlinepopupmenu td:first-child {
-    color: var(--lpblue);
-    padding-left: 0.5ex;
-}
-
-.logicpenguin sub-derivation
-    .jbwrap div .derivmenubutton .derivlinepopupmenu td:last-child {
-    color: var(--lpgray1);
-    padding-right: 0.5ex;
-}
-
-.logicpenguin sub-derivation
-    .jbwrap div .derivmenubutton .derivlinepopupmenu tr:first-child td {
-    padding-top: 0.5ex;
-}
-
-.logicpenguin sub-derivation
-    .jbwrap div .derivmenubutton .derivlinepopupmenu tr:last-child td {
-    padding-bottom: 0.5ex;
-}
-
-.logicpenguin sub-derivation
-    .jbwrap div .derivmenubutton .derivlinepopupmenu tr:hover {
-    background-color: var(--lpbggreen);
-    border-radius: 10px 10px 10px 10px;
-}
-
-.logicpenguin sub-derivation
-    .jbwrap div .derivmenubutton.opened .derivlinepopupmenu {
-    display: inline-table;
-}
-
-.logicpenguin sub-derivation
-    .jbwrap div .derivmenubutton .derivlinepopupmenu input[type="number"] {
-    width: 3em;
-    margin-left: 1ex;
-    font-size: inherit;
-    text-align: center;
-}
 
 /* CHECK "BUTTON" (really an indicator, meant as a button originally) */
 
@@ -279,9 +227,44 @@
     color: var(--lpyellow);
 }
 .logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .checking {
-    animation: flip 1s infinite linear;
-    animation-direction: alternate;
     color: var(--lpgray3);
+}
+
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck svg {
+    width: 1.2em;
+    height: 1.2em;
+    transform-origin: center;
+    animation: rotate4 2s linear infinite;
+}
+
+.logicpenguin sub-derivation .derivlinebuttons .derivlinecheck svg circle {
+    fill: none;
+    stroke: hsl(214, 97%, 59%);
+    stroke-width: 2;
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    stroke-linecap: round;
+    animation: dash4 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate4 {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes dash4 {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 90, 200;
+        stroke-dashoffset: -35px;
+    }
+    100% {
+        stroke-dashoffset: -125px;
+    }
 }
 .logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .good {
     color: #beafc2;

@@ -83,6 +83,27 @@ export default function RulesReference() {
         p: 2,
       }}
     >
+      <RulesCard title="Keyboard Shortcuts" defaultExpanded={true}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
+          Symbols
+        </Typography>
+        <Box component="div" sx={{ mb: 1.5, fontSize: '0.85rem' }}>
+          <div><strong>•</strong> Type <strong>&</strong> or <strong>^</strong> for • (conjunction)</div>
+          <div><strong>•</strong> Type <strong>v</strong> for ∨ (disjunction)</div>
+          <div><strong>•</strong> Type <strong>{'>'}</strong> or <strong>→</strong> or <strong>--&gt;</strong> for ⊃ (conditional)</div>
+          <div><strong>•</strong> Type <strong>==</strong> for ≡ (biconditional)</div>
+          <div><strong>•</strong> Type <strong>all</strong> for ∀ (universal quantifier)</div>
+          <div><strong>•</strong> Type <strong>some</strong> for ∃ (existential quantifier)</div>
+        </Box>
+        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
+          Navigation
+        </Typography>
+        <Box component="div" sx={{ fontSize: '0.85rem' }}>
+          <div><strong>•</strong> Press <strong>Enter</strong> to start a new line</div>
+          <div><strong>•</strong> Press the <strong>right arrow key</strong> to write a justification in your line</div>
+        </Box>
+      </RulesCard>
+      
       <RulesCard title="Rules of Reference" defaultExpanded={false}>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
           Rules of Implication
@@ -143,27 +164,6 @@ export default function RulesReference() {
           <div><strong>CP:</strong> To prove p ⊃ q, assume p (ACP) in indented subderivation, derive q, then discharge with CP citing the subderivation range</div>
           <div><strong>AIP:</strong> Assumption for Indirect Proof</div>
           <div><strong>IP:</strong> To prove ~p, assume p (AIP) in indented subderivation, derive a contradiction (q • ~q), then discharge with IP citing the subderivation range</div>
-        </Box>
-      </RulesCard>
-      
-      <RulesCard title="Keyboard Shortcuts" defaultExpanded={false}>
-        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
-          Symbols
-        </Typography>
-        <Box component="div" sx={{ mb: 1.5, fontSize: '0.85rem' }}>
-          <div><strong>•</strong> Type <strong>&</strong> or <strong>^</strong> for • (conjunction)</div>
-          <div><strong>•</strong> Type <strong>v</strong> for ∨ (disjunction)</div>
-          <div><strong>•</strong> Type <strong>{'>'}</strong> or <strong>→</strong> or <strong>--&gt;</strong> for ⊃ (conditional)</div>
-          <div><strong>•</strong> Type <strong>==</strong> for ≡ (biconditional)</div>
-          <div><strong>•</strong> Type <strong>all</strong> for ∀ (universal quantifier)</div>
-          <div><strong>•</strong> Type <strong>some</strong> for ∃ (existential quantifier)</div>
-        </Box>
-        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
-          Navigation
-        </Typography>
-        <Box component="div" sx={{ fontSize: '0.85rem' }}>
-          <div><strong>•</strong> Press <strong>Enter</strong> to start a new line</div>
-          <div><strong>•</strong> Press the <strong>right arrow key</strong> to write a justification in your line</div>
         </Box>
       </RulesCard>
     </Box>

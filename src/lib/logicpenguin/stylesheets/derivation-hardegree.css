@@ -264,7 +264,7 @@
     cursor: default !important;
 }
 
-.logicpenguin sub-derivation.mainderivation div.derivationshowline div.derivlinebuttons.invisible div.derivmenubutton {
+.logicpenguin sub-derivation.mainderivation div.derivationshowline div.derivlinebuttons.invisible div.derivlineactionbutton {
     visibility: hidden !important;
 }
 
