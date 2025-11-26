@@ -112,4 +112,3 @@ export default function ProofEditor({ proof, onProofComplete, savedState, onStat
     </div>
   )
 }
-

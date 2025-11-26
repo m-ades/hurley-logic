@@ -56,4 +56,3 @@ export default function LogicPenguinProof({
     </div>
   );
 }
-

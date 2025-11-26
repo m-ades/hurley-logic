@@ -16,15 +16,15 @@ export default function App() {
   const currentProof = currentWorksheet?.proofs[currentProofIndex]
   
   const { completedProofs, score, scoreStyle, handleProofComplete } = useScoring(
-    currentWorksheet?.proofs.length || 0
+    currentWorksheet
   )
   const { getSavedProofState, handleProofStateChange } = useProofState()
 
   const handleWorksheetChange = (newIndex) => {
     setCurrentWorksheetIndex(newIndex)
-    setCurrentProofIndex(0) // Reset to first question when switching worksheets
+    setCurrentProofIndex(0)
   }
-// export to pdf
+
   const handleExport = async () => {
     if (!currentWorksheet) return
     
@@ -69,7 +69,7 @@ export default function App() {
         <WorksheetTabs
           worksheets={WORKSHEETS}
           currentWorksheetIndex={currentWorksheetIndex}
-          onWorksheetIndexChange={setCurrentWorksheetIndex}
+          onWorksheetIndexChange={handleWorksheetChange}
           currentProofIndex={currentProofIndex}
           onProofIndexChange={setCurrentProofIndex}
           completedProofs={completedProofs}

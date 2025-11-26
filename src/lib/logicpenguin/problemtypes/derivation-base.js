@@ -12,6 +12,7 @@ import { addelem, htmlEscape } from '../common.js';
 import getSyntax from '../symbolic/libsyntax.js';
 import FormulaInput from '../ui/formula-input.js';
 import JustificationInput from '../ui/justification-input.js';
+import { justParse } from '../ui/justification-parse.js';
 
 export default class DerivationExercise extends LogicPenguinProblem {
 
@@ -298,6 +299,67 @@ export default class DerivationExercise extends LogicPenguinProblem {
         }
     }
 
+    normalizeRuleName(rule) {
+        if (!rule) { return ''; }
+        const ruleAliases = {
+            'mp': 'MP', 'mt': 'MT', 'hs': 'HS', 'ds': 'DS', 'cd': 'CD',
+            'simp': 'Simp', 'conj': 'Conj', 'add': 'Add',
+            'dn': 'DN', 'dm': 'DM', 'com': 'Com', 'assoc': 'Assoc',
+            'dist': 'Dist', 'trans': 'Trans', 'impl': 'Impl', 'equiv': 'Equiv',
+            'exp': 'Exp', 'taut': 'Taut', 'ui': 'UI', 'ug': 'UG',
+            'ei': 'EI', 'eg': 'EG', 'cq': 'CQ', 'qn': 'QN',
+            'ud': 'UG',
+            'cp': 'CP', 'ip': 'IP', 'acp': 'ACP', 'aip': 'AIP'
+        };
+        const key = rule.toLowerCase();
+        return ruleAliases[key] ?? rule;
+    }
+
+    getRuleNameFromLine(line) {
+        if (!line?.jinput?.value) { return ''; }
+        const { citedrules } = justParse(line.jinput.value);
+        if (citedrules.length < 1) { return ''; }
+        return this.normalizeRuleName(citedrules[0]);
+    }
+
+    updateIndentation() {
+        if (!this.linesByNum || this.linesByNum.length < 2) { return; }
+        let indentLevel = 0;
+        const assumptionStack = [];
+        const dash = '–';
+        for (let i = 1; i < this.linesByNum.length; i++) {
+            const line = this.linesByNum[i];
+            if (!line || line === 'offbyone') { continue; }
+            if (line.classList.contains('derivationshowline')) { continue; }
+            const lnNum = parseInt(line?.numbox?.innerHTML ?? i);
+            const rule = this.getRuleNameFromLine(line);
+            if (rule === 'ACP' || rule === 'AIP') {
+                indentLevel = Math.min(indentLevel + 1, 3);
+                line.indent = indentLevel;
+                assumptionStack.push({ start: lnNum, line });
+            } else if (rule === 'CP' || rule === 'IP') {
+                const open = assumptionStack.pop() ?? null;
+                indentLevel = Math.max(indentLevel - 1, 0);
+                line.indent = indentLevel;
+                const end = lnNum - 1;
+                if (open && end >= open.start && line?.jinput) {
+                    const desired = `${open.start}${dash}${end} ${rule}`;
+                    const current = line.jinput.value.trim();
+                    const looksAuto = current === '' ||
+                        /^[0-9?]+[–-][0-9?]+\s+[A-Za-z]+$/.test(current);
+                    if (looksAuto) {
+                        line.jinput.value = desired;
+                    }
+                }
+            } else {
+                line.indent = indentLevel;
+            }
+            if (line.style) {
+                line.style.marginLeft = `${line.indent * 1.5}em`;
+            }
+        }
+    }
+
     // note: makeRulePanel: specific to specific type of derivation problem
 
     renumberLines(allowchange = true) {
@@ -434,6 +496,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 line.jinput.value = newcites + ((rules) ? (' ' + rules) : '');
             }
         }
+        this.updateIndentation();
     }
 
     restoreAnswer(ans) {
@@ -460,6 +523,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
         }
         this.commentDiv.classList.remove('hidden');
         this.commentDiv.innerHTML = comm;
+        this.updateIndentation();
     }
 
     setIndicator(ind) {
@@ -613,7 +677,7 @@ export default class DerivationExercise extends LogicPenguinProblem {
     }
 
     icons = {
-        addline:        'playlist_add',
+        addline:        'add',
         addsubderiv:    'format_indent_increase',
         autocheckoff:   'unpublished',
         autocheckon:    'check',
@@ -623,8 +687,6 @@ export default class DerivationExercise extends LogicPenguinProblem {
         closemainderiv: 'check',
         good:           'check',
         incomplete:     'incomplete_circle',
-        insertabove:    'arrow_upward',
-        insertbelow:    'arrow_downward',
         justificationerror: 'close',
         malfunction:    'close',
         multierror:     'close',
@@ -770,6 +832,7 @@ export class SubDerivation extends HTMLElement {
         const line = addelem('div', loc, {
             classes: ['derivationline']
         });
+        line.indent = 0;
         // put in proper location
         if (loc == this.inner) {
             this.inner.insertBefore(line, this.buttons);
@@ -837,9 +900,9 @@ export class SubDerivation extends HTMLElement {
             classes: ['derivlinebuttons']
         });
 
-        // three tiny action buttons: insert above, insert below, delete
+        // tiny action buttons
         const actions = SubDerivation.lineActions;
-        const actionNames = ['insertabove', 'insertbelow', 'removeme'];
+        const actionNames = ['removeme'];
         
         for (const actionname of actionNames) {
             if (!actions[actionname]) continue;
@@ -1328,50 +1391,6 @@ export class SubDerivation extends HTMLElement {
 
     // these what get menu items in the little line menu
     static lineActions = {
-        insertabove: {
-            descr: 'insert line above',
-            numinp: false,
-            fn: function(e) {
-                let targspot = this.myline;
-                let targderiv = targspot.mysubderiv;
-                // showlines, previous are in parent
-                if (this.myline.classList.contains("derivationshowline")) {
-                    targspot = targderiv;
-                    targderiv = targderiv.parentderiv;
-                }
-                const nl = targderiv.addLine('', false);
-                // move line into place
-                targspot.parentNode.insertBefore(nl, targspot);
-                if (nl.input) { nl.input.focus();}
-            }
-        },
-        insertbelow: {
-            descr: 'insert line below',
-            numinp: false,
-            fn: function(e) {
-                let targetP = this.myline;
-                let targetSD = this.myline.mysubderiv;
-                // depending on whether subderivation closed, line either
-                // goes in this subderivation, or the parent subderivation
-                // for derivations without show lines
-                if (targetSD?.classList?.contains("closed") && !targetSD?.useShowLines
-                    && targetSD?.parentderiv) {
-                    targetP = targetSD;
-                    targetSD = targetSD.parentderiv;
-                }
-                // create line
-                const nl = targetSD.addLine('', false);
-                // move into place
-                if (targetP.classList.contains("derivationshowline")) {
-                    targetP.mysubderiv.inner.insertBefore(nl,
-                        this.myline.mysubderiv.inner.firstChild);
-                } else {
-                    targetP.parentNode.insertBefore(nl, targetP.nextSibling);
-                }
-                // this will always add a blank line so no use making changed
-                if (nl.input) { nl.input.focus();}
-            }
-        },
         removeme: {
             descr: 'remove line',
             numinp: false,

@@ -12,6 +12,41 @@ import { arrayUnion, perms } from '../misc.js';
 
 
 export default class DerivationCheck {
+    static ruleAliases = {
+        'mp': 'MP', 'Mp': 'MP', 'mP': 'MP',
+        'mt': 'MT', 'Mt': 'MT', 'mT': 'MT',
+        'hs': 'HS', 'Hs': 'HS', 'hS': 'HS',
+        'ds': 'DS', 'Ds': 'DS', 'dS': 'DS',
+        'simp': 'Simp', 'SIMP': 'Simp', 'SimP': 'Simp', 'sImp': 'Simp',
+        'conj': 'Conj', 'CONJ': 'Conj', 'ConJ': 'Conj', 'cOnj': 'Conj',
+        'add': 'Add', 'ADD': 'Add', 'AdD': 'Add', 'aDd': 'Add',
+        'cd': 'CD', 'Cd': 'CD', 'cD': 'CD',
+
+        'dn': 'DN', 'Dn': 'DN', 'dN': 'DN',
+        'dm': 'DM', 'Dm': 'DM', 'dM': 'DM',
+        'com': 'Com', 'COM': 'Com', 'CoM': 'Com', 'cOm': 'Com',
+        'assoc': 'Assoc', 'ASSOC': 'Assoc', 'AsSoC': 'Assoc',
+        'dist': 'Dist', 'DIST': 'Dist', 'DiSt': 'Dist', 'dIsT': 'Dist',
+        'trans': 'Trans', 'TRANS': 'Trans', 'TrAnS': 'Trans',
+        'impl': 'Impl', 'IMPL': 'Impl', 'ImPl': 'Impl', 'iMpL': 'Impl',
+        'equiv': 'Equiv', 'EQUIV': 'Equiv', 'EqUiV': 'Equiv',
+        'exp': 'Exp', 'EXP': 'Exp', 'ExP': 'Exp', 'eXp': 'Exp',
+        'taut': 'Taut', 'TAUT': 'Taut', 'TaUt': 'Taut', 'tAuT': 'Taut',
+
+        'ui': 'UI', 'Ui': 'UI', 'uI': 'UI',
+        'ug': 'UG', 'Ug': 'UG', 'uG': 'UG',
+        'ei': 'EI', 'Ei': 'EI', 'eI': 'EI',
+        'eg': 'EG', 'Eg': 'EG', 'eG': 'EG',
+        'cq': 'CQ', 'Cq': 'CQ', 'cQ': 'CQ',
+        'qn': 'QN', 'Qn': 'QN', 'qN': 'QN',
+        
+        'UD': 'UG', // logicpenguin compatibility
+        'cp': 'CP', 'Cp': 'CP', 'cP': 'CP',
+        'ip': 'IP', 'Ip': 'IP', 'iP': 'IP',
+        'acp': 'ACP', 'Acp': 'ACP', 'AcP': 'ACP', 'aCp': 'ACP', 'acP': 'ACP',
+        'aip': 'AIP', 'Aip': 'AIP', 'AiP': 'AIP', 'aIp': 'AIP', 'aiP': 'AIP',
+    };
+
     constructor(notationname, rules, deriv, prems, conc,
         thorough = false, numberedShowLines = false) {
         this.notationname = notationname;
@@ -48,6 +83,28 @@ export default class DerivationCheck {
             this.errors[target][category][severity][desc] = 1;
         }
         return this.errors;
+    }
+
+    normalizeRuleName(rule) {
+        if (!rule) { return ''; }
+        if (rule in DerivationCheck.ruleAliases) {
+            return DerivationCheck.ruleAliases[rule];
+        }
+        return rule;
+    }
+
+    resolveRuleName(line) {
+        if (!line) { return ''; }
+        if (line.rulechecked) {
+            return line.rulechecked;
+        }
+        if (line.j) {
+            const { citedrules } = justParse(line.j);
+            if (citedrules.length > 0) {
+                return this.normalizeRuleName(citedrules[0]);
+            }
+        }
+        return '';
     }
 
     amts = { high: 0.2, medium: 0.15, low: 0.1 };
@@ -231,45 +288,10 @@ export default class DerivationCheck {
             this.adderror(line.n, 'justification', 'low', 'cites more than one rule' +
             ' (only one can be checked)');
         }
-        // alternative hurley rule name map
-        const ruleAliases = {
-            'mp': 'MP', 'Mp': 'MP', 'mP': 'MP',
-            'mt': 'MT', 'Mt': 'MT', 'mT': 'MT',
-            'hs': 'HS', 'Hs': 'HS', 'hS': 'HS',
-            'ds': 'DS', 'Ds': 'DS', 'dS': 'DS',
-            'simp': 'Simp', 'SIMP': 'Simp', 'SimP': 'Simp', 'sImp': 'Simp',
-            'conj': 'Conj', 'CONJ': 'Conj', 'ConJ': 'Conj', 'cOnj': 'Conj',
-            'add': 'Add', 'ADD': 'Add', 'AdD': 'Add', 'aDd': 'Add',
-            'cd': 'CD', 'Cd': 'CD', 'cD': 'CD',
-
-            'dn': 'DN', 'Dn': 'DN', 'dN': 'DN',
-            'dm': 'DM', 'Dm': 'DM', 'dM': 'DM',
-            'com': 'Com', 'COM': 'Com', 'CoM': 'Com', 'cOm': 'Com',
-            'assoc': 'Assoc', 'ASSOC': 'Assoc', 'AsSoC': 'Assoc',
-            'dist': 'Dist', 'DIST': 'Dist', 'DiSt': 'Dist', 'dIsT': 'Dist',
-            'trans': 'Trans', 'TRANS': 'Trans', 'TrAnS': 'Trans',
-            'impl': 'Impl', 'IMPL': 'Impl', 'ImPl': 'Impl', 'iMpL': 'Impl',
-            'equiv': 'Equiv', 'EQUIV': 'Equiv', 'EqUiV': 'Equiv',
-            'exp': 'Exp', 'EXP': 'Exp', 'ExP': 'Exp', 'eXp': 'Exp',
-            'taut': 'Taut', 'TAUT': 'Taut', 'TaUt': 'Taut', 'tAuT': 'Taut',
-
-            'ui': 'UI', 'Ui': 'UI', 'uI': 'UI',
-            'ug': 'UG', 'Ug': 'UG', 'uG': 'UG',
-            'ei': 'EI', 'Ei': 'EI', 'eI': 'EI',
-            'eg': 'EG', 'Eg': 'EG', 'eG': 'EG',
-            'cq': 'CQ', 'Cq': 'CQ', 'cQ': 'CQ',
-            'qn': 'QN', 'Qn': 'QN', 'qN': 'QN',
-            
-            'UD': 'UG', // logicpenguin compatibility
-        };
-        
         // make sure the rule(s) exist(s)
         const realrules = [];
         for (const originalRule of citedrules) { // name map check
-            let rule = originalRule;
-            if (rule in ruleAliases) {
-                rule = ruleAliases[rule];
-            }
+            const rule = this.normalizeRuleName(originalRule);
             if ((!(rule in this.rules)) || this.rules[rule].meinongian) {
                 this.adderror(line.n, 'rule', 'high', 'cites a rule (' + originalRule +
                     ') that does not exist');
@@ -322,6 +344,9 @@ export default class DerivationCheck {
             } else {
                 needednumranges = [0];
             }
+            if (rulechecked === 'CP' || rulechecked === 'IP' || ruleinfo?.closes) {
+                needednumranges = [0,1];
+            }
             if (needednumranges.indexOf(ranges.length) == -1) {
                 this.adderror(line.n, "justification", "low", "cites the wrong " +
                     "number of subderivation line ranges for the rule specified");
@@ -362,6 +387,10 @@ export default class DerivationCheck {
                 rulename + '” found');
             return line;
         }
+        if (rulename === 'ACP') { return this.checkACP(line); }
+        if (rulename === 'AIP') { return this.checkAIP(line); }
+        if (rulename === 'CP') { return this.checkCP(line); }
+        if (rulename === 'IP') { return this.checkIP(line); }
         // PREMISE
         if (rule?.premiserule) {
             const norm = Formula.from(line.s).normal;
@@ -525,6 +554,152 @@ export default class DerivationCheck {
         return line;
     }
 
+    computeIndents() {
+        if (!this?.deriv?.lines) { return; }
+        let indentLevel = 0;
+        const assumptionStack = [];
+        for (const line of this.deriv.lines) {
+            if (typeof line.indent !== 'number') {
+                line.indent = 0;
+            }
+            line.closedAssumption = null;
+            const ruleName = this.resolveRuleName(line);
+
+            if (ruleName === 'ACP' || ruleName === 'AIP') {
+                if (indentLevel >= 3) {
+                    this.adderror(line.n, "rule", "high",
+                        "Maximum nested assumption depth (3) exceeded.");
+                }
+                indentLevel++;
+                line.indent = indentLevel;
+                assumptionStack.push(line);
+                continue;
+            }
+
+            if (ruleName === 'CP' || ruleName === 'IP') {
+                if (indentLevel === 0 || assumptionStack.length === 0) {
+                    this.adderror(line.n, "rule", "high",
+                        "CP/IP used with no open assumption.");
+                } else {
+                    const closed = assumptionStack.pop() ?? null;
+                    line.closedAssumption = closed;
+                    indentLevel = Math.max(indentLevel - 1, 0);
+                }
+                line.indent = indentLevel;
+                continue;
+            }
+
+            line.indent = indentLevel;
+        }
+    }
+
+    findMostRecentOpenAssumption(currentLine, ruleName, formula) {
+        if (!this?.deriv?.lines || !currentLine) { return null; }
+        const currIndex = this.deriv.lines.indexOf(currentLine);
+        const targetIndent = (currentLine?.indent ?? 0) + 1;
+        for (let i = currIndex - 1; i >= 0; i--) {
+            const ln = this.deriv.lines[i];
+            if (!ln) { continue; }
+            if (ln.indent !== targetIndent) { continue; }
+            const rule = this.resolveRuleName(ln);
+            if (rule !== ruleName) { continue; }
+            const lnFormula = ln?.formulaNormal ??
+                ((ln?.s) ? this.Formula.from(ln.s).normal : '');
+            if (formula && lnFormula?.trim() !== formula.trim()) { continue; }
+            let stillOpen = true;
+            for (let j = i + 1; j < currIndex; j++) {
+                if ((this.deriv.lines[j]?.indent ?? 0) < ln.indent) {
+                    stillOpen = false;
+                    break;
+                }
+            }
+            if (stillOpen) {
+                return ln;
+            }
+        }
+        return null;
+    }
+
+    checkACP(line) {
+        if (!line?.formulaNormal) {
+            this.adderror(line.n, "rule", "high",
+                "ACP requires an assumption formula.");
+            return line;
+        }
+        line.checkedOK = true;
+        return line;
+    }
+
+    checkAIP(line) {
+        if (!line?.formulaNormal) {
+            this.adderror(line.n, "rule", "high",
+                "AIP requires an assumption formula.");
+            return line;
+        }
+        line.checkedOK = true;
+        return line;
+    }
+
+    checkCP(line) {
+        if (!line?.formulaNormal || line.formulaNormal.indexOf("⊃") === -1) {
+            this.adderror(line.n, "rule", "high",
+                "CP requires a conditional conclusion (A ⊃ B).");
+            return line;
+        }
+        const parts = line.formulaNormal.split("⊃");
+        if (parts.length < 2) {
+            this.adderror(line.n, "rule", "high",
+                "CP requires a conditional conclusion (A ⊃ B).");
+            return line;
+        }
+        const antecedent = parts[0].trim();
+        const assumptionLine = this.findMostRecentOpenAssumption(
+            line, "ACP", antecedent
+        );
+        if (!assumptionLine) {
+            this.adderror(line.n, "rule", "high",
+                "CP requires a matching ACP assumption in scope.");
+            return line;
+        }
+        if (line.closedAssumption && line.closedAssumption !== assumptionLine) {
+            this.adderror(line.n, "rule", "high",
+                "CP must discharge the most recent matching assumption.");
+            return line;
+        }
+        line.checkedOK = true;
+        return line;
+    }
+
+    checkIP(line) {
+        if (!line?.formulaNormal) {
+            this.adderror(line.n, "rule", "high",
+                "IP requires a conclusion formula.");
+            return line;
+        }
+        const assumptionLine =
+            (line.closedAssumption && this.resolveRuleName(line.closedAssumption) === 'AIP')
+                ? line.closedAssumption
+                : this.findMostRecentOpenAssumption(line, "AIP", null);
+        if (!assumptionLine) {
+            this.adderror(line.n, "rule", "high",
+                "IP requires an AIP assumption in scope.");
+            return line;
+        }
+        const expected = "~" + (assumptionLine.formulaNormal ?? '').trim();
+        if (line.formulaNormal.trim() !== expected) {
+            this.adderror(line.n, "rule", "high",
+                "IP conclusion must be the negation of the AIP assumption.");
+            return line;
+        }
+        if (line.closedAssumption && line.closedAssumption !== assumptionLine) {
+            this.adderror(line.n, "rule", "high",
+                "IP must discharge the most recent matching assumption.");
+            return line;
+        }
+        line.checkedOK = true;
+        return line;
+    }
+
     checkDeriv(deriv) {
         const Formula = this.Formula;
         if (!deriv.lines) { return; }
@@ -532,6 +707,8 @@ export default class DerivationCheck {
         for (const line of deriv.lines) {
             // check the syntax
             const f = Formula.from(line.s);
+            line.formula = f;
+            line.formulaNormal = f?.normal ?? '';
             if (f.wellformed) {
 
             } else {
@@ -547,6 +724,7 @@ export default class DerivationCheck {
             this.checkJustification(line);
             // check rule if there is one
         }
+        this.computeIndents();
         // loop through again to check actual rules
         for (const line of deriv.lines) {
             if (line?.rulechecked) {
@@ -658,6 +836,13 @@ export default class DerivationCheck {
             this.adderror(line.n, "justification", "high",
                 "cites a range of lines later in the derviation");
             return false;
+        }
+        const rulename = this.resolveRuleName(line);
+        if (rulename === 'CP' || rulename === 'IP') {
+            // For Hurley-style flat indentation, allow simple ranges with no subderiv structure
+            if (start < parseInt(line.n) && end < parseInt(line.n)) {
+                return true;
+            }
         }
         const citestartline = this.deriv.lines[zbstart];
         const citeendline = this.deriv.lines[zbend];
@@ -1038,6 +1223,52 @@ export class formFit {
         } else {
             this.possible = false;
             this.message = 'cited line does not contain the formula without the quantifier.';
+        }
+    }
+
+    checkEG() {
+        if (this.rulename != "EG" || !this.possible) { return; }
+        const Formula = this.Formula;
+        const conc = this.resultf;
+        if (conc.op != Formula.syntax.symbols.EXISTS) {
+            this.possible = false;
+            this.message = 'EG requires a ∃-statement as the conclusion.';
+            return;
+        }
+        const boundVar = conc.boundvar;
+        const matrix = conc.right;
+        if (!boundVar || !matrix) {
+            this.possible = false;
+            this.message = 'EG requires quantifying over a variable in the formula.';
+            return;
+        }
+        if (!matrix.freevars.includes(boundVar)) {
+            this.possible = false;
+            this.message = 'EG must generalize on a free occurrence of the variable it introduces.';
+            return;
+        }
+        const citedLines = (this.line.citedlines ?? []).filter((l) => (l && l.s));
+        if (citedLines.length === 0) {
+            this.possible = false;
+            this.message = 'EG requires citing a line.';
+            return;
+        }
+        let matchesCited = false;
+        for (const cited of citedLines) {
+            const citedFormula = Formula.from(cited.s);
+            const candidateTerms = Array.from(new Set(citedFormula.terms ?? []));
+            for (const term of candidateTerms) {
+                const instantiated = Formula.from(matrix.instantiate(boundVar, term));
+                if (instantiated.normal == citedFormula.normal) {
+                    matchesCited = true;
+                    break;
+                }
+            }
+            if (matchesCited) { break; }
+        }
+        if (!matchesCited) {
+            this.possible = false;
+            this.message = 'EG must generalize on a term that actually occurs in the cited formula.';
         }
     }
 
@@ -1457,6 +1688,7 @@ export class formFit {
         this.checkRestrictions();
         this.checkUI();
         this.checkUG();
+        this.checkEG();
         const newresult = this.checkNewness();
         if (!newresult) {
             if (this.message != '') { this.message += '; '; }
@@ -1581,4 +1813,3 @@ export class replacementRuleCheck {
     }
 
 }
-

@@ -54,9 +54,7 @@ export default function ProofTabs({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const proofRefs = React.useRef({})
   
-  // saves state when switching tabs
   const handleTabChange = (e, newValue) => {
-    // save current answer's state before switching
     const currentProof = proofs[currentProofIndex]
     if (currentProof) {
       const proofEditorRef = proofRefs.current[currentProof.id]
@@ -167,4 +165,3 @@ export default function ProofTabs({
     </Box>
   )
 }
-

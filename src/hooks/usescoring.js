@@ -1,22 +1,22 @@
 import { useEffect, useMemo, useState } from 'react'
 
-export function useScoring(totalProofs) {
+export function useScoring(currentWorksheet) {
   const [completedProofs, setCompletedProofs] = useState(new Set())
   const [pop, setPop] = useState(false)
 
   const score = useMemo(() => {
-    return completedProofs.size
-  }, [completedProofs])
+    if (!currentWorksheet) return 0
+    const worksheetProofIds = new Set(currentWorksheet.proofs.map(p => p.id))
+    return Array.from(completedProofs).filter(id => worksheetProofIds.has(id)).length
+  }, [completedProofs, currentWorksheet])
 
   useEffect(() => {
-    if (completedProofs.size > 0) {
+    if (score > 0) {
       setPop(true)
       const t = setTimeout(() => setPop(false), 250)
-      return () => {
-        clearTimeout(t)
-      }
+      return () => clearTimeout(t)
     }
-  }, [score, completedProofs])
+  }, [score])
 
   const scoreStyle = {
     display: 'inline-block',
@@ -26,9 +26,10 @@ export function useScoring(totalProofs) {
   }
 
   const handleProofComplete = (proofId) => {
-    setCompletedProofs((prev) => new Set([...prev, proofId]))
-    setPop(true)
-    setTimeout(() => setPop(false), 250)
+    setCompletedProofs((prev) => {
+      if (prev.has(proofId)) return prev
+      return new Set([...prev, proofId])
+    })
   }
 
   return {
@@ -38,4 +39,3 @@ export function useScoring(totalProofs) {
     handleProofComplete
   }
 }
-

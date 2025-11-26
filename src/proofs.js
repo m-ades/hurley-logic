@@ -23,19 +23,20 @@ const WORKSHEET_1 = [
 ]
 
 // Worksheet 2 (placeholder - duplicate for now, you can replace with actual questions)
+
 const WORKSHEET_2 = [
-  createProof(2, 1, ['(∀x)(Dx ⊃ Mx)', '(∀x)(Mx ⊃ Dx)'], 'Dx ≡ Mx'),
-  createProof(2, 2, ['(∀x)[(Ax • Bx) ⊃ Cx]', '(∀x)(Cx ⊃ Dx)'], '(∀x)[(Ax • Bx) ⊃ Dx]'),
-  createProof(2, 3, ['(∀x)[Ax ⊃ (Bx ∨ Cx)]', '(∃x)(Ax•~Cx)'], '(∃x)Bx'),
-  createProof(2, 4, ['(∀x)[(Ax • Bx) ⊃ Cx]', '(∀x)(Cx ⊃ Dx)'], '(∀x)[(Ax • Bx) ⊃ Dx]'),
-  createProof(2, 5, ['(∀x)[Jx ⊃ (Kx • Lx)]', '(∃y)~Ky'], '(∃z)~Jz'),
-  createProof(2, 6, ['(∃x)[(Ax)• (Cx ⊃ Bx)]', 'Cb'], '(∃x)(Ax)• (∃x)(Cx)'),
-  createProof(2, 7, ['[(∃x)(Ax)• (∃x)(Bx)] ⊃ Cj', '(∃x)(Ax•Dx)', '(∃x)(Bx•Ex)'], 'Cj'),
-  createProof(2, 8, ['(∃x)(Kx) ⊃ (∀x)[Lx ⊃ Mx]', 'Kc • Lc'], 'Mc'),
-  createProof(2, 9, ['(∀x)(Px⊃ Qx) ⊃ (∃x)(Sx)', '(∀x)(Px⊃ Sx) • (∀x)(Sx⊃ Qx)'], '(∃x)Sx'),
-  createProof(2, 10, ['~(∃x)(Px•~Qx)', '~(∀x)(~Rx ∨ Qx)'], '(∃x)~Px'),
-  createProof(2, 11, ['(∃x)(Hx•Gx) ⊃ (∀x) Ax', '~Am'], '(∀x) (Hx ⊃ ~Gx)'),
+  createProof(16, 'J', ['~(∃x)(Px•~Qx)', '~(∀x)(~Rx ∨ Qx)'], '(∃x)~Px'),
+  createProof(16, 'K', ['(∃x)(Hx•Gx) ⊃ (∀x) Ax', '~Am'], '(∀x)(Hx ⊃ ~Gx)'),
+  createProof(16, 1, ['(x)(Ax ⊃ Bx)', '(x)(Ax ⊃ Cx)'], '(x)[Ax ⊃ (Bx • Cx)]'),
+  createProof(16, 2, ['(∃x)Ax ⊃ (∃x)(Bx • Cx)', '(∃x)(Cx ∨ Dx) ⊃ (x)Ex'], '(x)(Ax ⊃ Ex)'),
+  createProof(16, 3, ['(∃x)Ax ⊃ (∃x)(Bx • Cx)', '~(∃x)Cx'], '(x)~Ax'),
+  createProof(16, 4, ['(x)(Ax ⊃ Cx)', '(∃x)Cx ⊃ (∃x)(Bx • Dx)'], '(∃x)Ax ⊃ (∃x)Bx'),
+  createProof(16, 5, ['(x)(Ax ⊃ Bx)', 'Am ∨ An'], '(∃x)Bx'),
+  createProof(16, 6, ['(∃x)Ax ⊃ (x)(Bx ⊃ Cx)', '(∃x)Dx ⊃ (∃x)Bx'], '(∃x)(Ax • Dx) ⊃ (∃x)Cx'),
+  createProof(16, 7, ['(x)(Ax ⊃ Bx)', '~(∃x)Ax ⊃ (∃x)(Cx • Dx)', '(∃x)(Dx ∨ Ex) ⊃ (∃x)Bx'], '(∃x)Bx'),
+  createProof(16, 8, ['(∃x)(Ax ∨ Ex) ⊃ (x)(Bx • ~Cx)', '(∃x)(Bx ∨ Fx) ⊃ (x)(Cx ∨ Dx)'], '(x)(Ax ⊃ Dx)'),
 ]
+
 
 // Worksheet 3
 const WORKSHEET_3 = [
@@ -159,7 +160,7 @@ const WORKSHEET_10 = [
 
 // Worksheets array
 export const WORKSHEETS = [
-  { id: 1, title: 'Worksheet 1', proofs: WORKSHEET_1 },
+  { id: 1, title: 'Worksheet 15', proofs: WORKSHEET_1 },
   { id: 2, title: 'Worksheet 2', proofs: WORKSHEET_2 },
   { id: 3, title: 'Worksheet 3', proofs: WORKSHEET_3 },
   { id: 4, title: 'Worksheet 4', proofs: WORKSHEET_4 },

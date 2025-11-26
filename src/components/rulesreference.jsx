@@ -99,8 +99,8 @@ export default function RulesReference() {
           Navigation
         </Typography>
         <Box component="div" sx={{ fontSize: '0.85rem' }}>
-          <div><strong>•</strong> Press <strong>Enter</strong> to start a new line</div>
-          <div><strong>•</strong> Press the <strong>right arrow key</strong> to write a justification in your line</div>
+          <div><strong>•</strong> Press <strong>Enter</strong> to go to the justification line</div>
+          <div><strong>•</strong> Press <strong>Enter</strong> from the justification line to start a new line</div>
         </Box>
       </RulesCard>
       
@@ -117,23 +117,37 @@ export default function RulesReference() {
           <div><strong>6. Simp:</strong> p • q / p</div>
           <div><strong>7. Conj:</strong> p, q / p • q</div>
           <div><strong>8. Add:</strong> p / p ∨ q</div>
-          <div><strong>19. CP:</strong> Conditional Proof (see below)</div>
-          <div><strong>20. IP:</strong> Indirect Proof (see below)</div>
         </Box>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
           Rules of Replacement
         </Typography>
         <Box component="div" sx={{ fontSize: '0.85rem' }}>
-          <div><strong>9. DM:</strong> ~(p • q) :: (~p ∨ ~q)</div>
-          <div><strong>10. Com:</strong> (p ∨ q) :: (q ∨ p)</div>
-          <div><strong>11. Assoc:</strong> [p ∨ (q ∨ r)] :: [(p ∨ q) ∨ r]</div>
-          <div><strong>12. Dist:</strong> [p • (q ∨ r)] :: [(p • q) ∨ (p • r)]</div>
-          <div><strong>13. DN:</strong> p :: ~~p</div>
-          <div><strong>14. Trans:</strong> (p ⊃ q) :: (~q ⊃ ~p)</div>
-          <div><strong>15. Impl:</strong> (p ⊃ q) :: (~p ∨ q)</div>
-          <div><strong>16. Equiv:</strong> (p ≡ q) :: [(p ⊃ q) • (q ⊃ p)]</div>
-          <div><strong>17. Exp:</strong> [(p • q) ⊃ r] :: [p ⊃ (q ⊃ r)]</div>
-          <div><strong>18. Taut:</strong> p :: (p ∨ p)</div>
+          <div><strong>9. DM:</strong></div>
+          <div style={{ paddingLeft: '28px' }}>~(p • q) :: (~p ∨ ~q)</div>
+          <div style={{ paddingLeft: '28px' }}>~(p ∨ q) :: (~p • ~q)</div>
+          <div><strong>10. Com:</strong></div>
+          <div style={{ paddingLeft: '28px' }}>(p ∨ q) :: (q ∨ p)</div>
+          <div style={{ paddingLeft: '28px' }}>(p • q) :: (q • p)</div>
+          <div><strong>11. Assoc:</strong></div>
+          <div style={{ paddingLeft: '28px' }}>[p ∨ (q ∨ r)] :: [(p ∨ q) ∨ r]</div>
+          <div style={{ paddingLeft: '28px' }}>[p • (q • r)] :: [(p • q) • r]</div>
+          <div><strong>12. Dist:</strong></div>
+          <div style={{ paddingLeft: '28px' }}>[p • (q ∨ r)] :: [(p • q) ∨ (p • r)]</div>
+          <div style={{ paddingLeft: '28px' }}>[p ∨ (q • r)] :: [(p ∨ q) • (p ∨ r)]</div>
+          <div><strong>13. DN:</strong></div>
+          <div style={{ paddingLeft: '28px' }}>p :: ~~p</div>
+          <div><strong>14. Trans:</strong></div>
+          <div style={{ paddingLeft: '28px' }}>(p ⊃ q) :: (~q ⊃ ~p)</div>
+          <div><strong>15. Impl:</strong></div>
+          <div style={{ paddingLeft: '28px' }}>(p ⊃ q) :: (~p ∨ q)</div>
+          <div><strong>16. Equiv:</strong></div>
+          <div style={{ paddingLeft: '28px' }}>(p ≡ q) :: [(p ⊃ q) • (q ⊃ p)]</div>
+          <div style={{ paddingLeft: '28px' }}>(p ≡ q) :: [(p • q) ∨ (~p • ~q)]</div>
+          <div><strong>17. Exp:</strong></div>
+          <div style={{ paddingLeft: '28px' }}>[(p • q) ⊃ r] :: [p ⊃ (q ⊃ r)]</div>
+          <div><strong>18. Taut:</strong></div>
+          <div style={{ paddingLeft: '28px' }}>p :: (p ∨ p)</div>
+          <div style={{ paddingLeft: '28px' }}>p :: (p • p)</div>
         </Box>
       </RulesCard>
       
@@ -142,10 +156,10 @@ export default function RulesReference() {
           Predicate Logic Rules
         </Typography>
         <Box component="div" sx={{ mb: 1.5, fontSize: '0.85rem' }}>
-          <div><strong>UI:</strong> (x)Fx / Fy</div>
-          <div><strong>UG:</strong> Fy / (x)Fx</div>
-          <div><strong>EI:</strong> (∃x)Fx / Fn</div>
-          <div><strong>EG:</strong> Fn / (∃x)Fx</div>
+          <div><strong>UI:</strong> (x)Fx / Fx &nbsp;or&nbsp; (x)Fx / Fa</div>
+          <div><strong>UG:</strong> Fx / (x)Fx</div>
+          <div><strong>EI:</strong> (∃x)Fx / Fa</div>
+          <div><strong>EG:</strong> Fa / (∃x)Fx &nbsp;or&nbsp; Fx / (∃x)Fx</div>
         </Box>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
           Change of Quantifier (CQ)
@@ -153,17 +167,17 @@ export default function RulesReference() {
         <Box component="div" sx={{ mb: 1.5, fontSize: '0.85rem' }}>
           <div><strong>CQ:</strong> ~(x)Fx :: (∃x)~Fx</div>
           <div><strong>CQ:</strong> ~(∃x)Fx :: (x)~Fx</div>
-          <div><strong>CQ:</strong> (x)~Fx :: ~(∃x)Fx</div>
-          <div><strong>CQ:</strong> (∃x)~Fx :: ~(x)Fx</div>
+          <div><strong>CQ:</strong> (x)Fx :: ~(∃x)~Fx</div>
+          <div><strong>CQ:</strong> (∃x)Fx :: ~(x)~Fx</div>
         </Box>
-        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
-          Conditional Proof (CP) & Indirect Proof (IP)
-        </Typography>
+      </RulesCard>
+
+      <RulesCard title="Conditional & Indirect Proofs" defaultExpanded={false}>
         <Box component="div" sx={{ fontSize: '0.85rem' }}>
           <div><strong>ACP:</strong> Assumption for Conditional Proof</div>
-          <div><strong>CP:</strong> To prove p ⊃ q, assume p (ACP) in indented subderivation, derive q, then discharge with CP citing the subderivation range</div>
+          <div><strong>CP:</strong> To prove p ⊃ q, assume p (ACP) in an indented subderivation, derive q, then discharge with CP citing the subderivation range</div>
           <div><strong>AIP:</strong> Assumption for Indirect Proof</div>
-          <div><strong>IP:</strong> To prove ~p, assume p (AIP) in indented subderivation, derive a contradiction (q • ~q), then discharge with IP citing the subderivation range</div>
+          <div><strong>IP:</strong> To prove ~p, assume p (AIP) in an indented subderivation, derive a contradiction (q • ~q), then discharge with IP citing the subderivation range</div>
         </Box>
       </RulesCard>
     </Box>
@@ -238,4 +252,3 @@ export default function RulesReference() {
     </>
   )
 }
-

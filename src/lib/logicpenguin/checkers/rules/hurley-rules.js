@@ -6,6 +6,10 @@ const hurleyRules = {
     // Logicpenguin system rules
     "Pr"  : { premiserule: true },
     "Ass" : { assumptionrule: true, hidden: true },
+    "ACP" : { assumptionrule: true, opens: true },
+    "AIP" : { assumptionrule: true, opens: true },
+    "CP"  : { forms: [ { conc: "A ⊃ B", closes: true } ] },
+    "IP"  : { forms: [ { conc: "A", closes: true } ] },
     
     // Rules of Inference
     "MP"  : { forms: [ { prems: ["A ⊃ B", "A"], conc: "B" } ] },
@@ -76,6 +80,8 @@ const hurleyRules = {
     
     // Change of Quantifier Rules
     "CQ" : { pred: true, replacementrule: true, forms: [
+        { a: "∀xAx", b: "~∃x~Ax" },
+        { a: "∃xAx", b: "~∀x~Ax" },
         { a: "~∀xAx", b: "∃x~Ax" },
         { a: "~∃xAx", b: "∀x~Ax" },
         { a: "∀x~Ax", b: "~∃xAx" },

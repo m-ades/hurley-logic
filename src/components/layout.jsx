@@ -1,4 +1,4 @@
-import { Box, Container, Typography, Select, MenuItem, FormControl, IconButton } from '@mui/material'
+import { Box, Container, Typography, Select, MenuItem, FormControl, IconButton, Tooltip } from '@mui/material'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import DownloadIcon from '@mui/icons-material/Download'
 import RulesReference from './rulesreference.jsx'
@@ -52,22 +52,23 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
                 {completedProofs.has(currentProofId) && (
                 <CheckCircleIcon sx={{ color: '#beafc2', fontSize: { xs: 20, md: 28 } }} />
                 )}
-                {/* export to pdf */}
                 {onExportClick && (
-                  <IconButton
-                    onClick={onExportClick}
-                    sx={{
-                      color: 'rgba(0, 0, 0, 0.9)',
-                      fontSize: { xs: '1rem', md: '1.25rem' },
-                      padding: '0.5rem',
-                      '&:hover': {
-                        backgroundColor: 'rgba(129, 85, 186, 0.08)',
-                      },
-                    }}
-                    aria-label="Export PDF"
-                  >
-                    <DownloadIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
-                  </IconButton>
+                  <Tooltip title="download your work">
+                    <IconButton
+                      onClick={onExportClick}
+                      sx={{
+                        color: 'rgba(0, 0, 0, 0.9)',
+                        fontSize: { xs: '1rem', md: '1.25rem' },
+                        padding: '0.5rem',
+                        '&:hover': {
+                          backgroundColor: 'rgba(129, 85, 186, 0.08)',
+                        },
+                      }}
+                      aria-label="Export PDF"
+                    >
+                      <DownloadIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
+                    </IconButton>
+                  </Tooltip>
                 )}
                 {worksheets && (
                   <FormControl sx={{ minWidth: 'auto', ml: 2 }}>
@@ -79,7 +80,7 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
                         fontFamily: '"IBM Plex Sans", sans-serif',
                         fontSize: '0.875rem',
                         color: 'rgba(0, 0, 0, 0.9)',
-                        borderRadius: '50px',
+                        borderRadius: '5px',
                         backgroundColor: 'transparent',
                         boxShadow: '3px 3px 8px rgba(190, 190, 190, 0.4), -3px -3px 8px rgba(255, 255, 255, 0.5)',
                         opacity: 0.9,
