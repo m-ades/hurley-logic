@@ -38,7 +38,7 @@ export default class DerivationCheck {
         'ei': 'EI', 'Ei': 'EI', 'eI': 'EI',
         'eg': 'EG', 'Eg': 'EG', 'eG': 'EG',
         'cq': 'CQ', 'Cq': 'CQ', 'cQ': 'CQ',
-        'qn': 'QN', 'Qn': 'QN', 'qN': 'QN',
+        'qn': 'CQ', 'Qn': 'CQ', 'qN': 'CQ', 'QN': 'CQ',
         
         'UD': 'UG', // logicpenguin compatibility
         'cp': 'CP', 'Cp': 'CP', 'cP': 'CP',

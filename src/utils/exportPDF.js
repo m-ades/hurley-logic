@@ -89,27 +89,53 @@ function extractLines(savedState, startIndex, premises) {
   let counter = startIndex
   const premisesSet = new Set(premises.map(p => p.trim()))
 
-  function walk(parts, depth = 0) {
+  const flatten = (parts = [], acc = []) => {
     parts.forEach(item => {
-      if (item.s !== undefined) {
-        const trimmed = item.s.trim()
-        if (premisesSet.has(trimmed)) return // skip premises
-
-        out.push({
-          left: `${counter}. ${trimmed}`,
-          right: item.j?.trim() || ""
-        })
-
-        counter++
-      }
-      // Nested block
-      else if (item.parts) {
-        walk(item.parts, depth + 1)
+      if (item?.s !== undefined) {
+        acc.push(item)
+      } else if (item?.parts) {
+        flatten(item.parts, acc)
       }
     })
+    return acc
   }
 
-  walk(savedState?.ans?.parts || [])
+  const getRule = (j = '') => {
+    const up = j.toUpperCase()
+    if (/\bACP\b/.test(up)) return 'ACP'
+    if (/\bAIP\b/.test(up)) return 'AIP'
+    if (/\bCP\b/.test(up)) return 'CP'
+    if (/\bIP\b/.test(up)) return 'IP'
+    return ''
+  }
+
+  const allLines = flatten(savedState?.ans?.parts || [])
+  let indentLevel = 0
+
+  for (const item of allLines) {
+    const trimmed = (item?.s || '').trim()
+    if (!trimmed || premisesSet.has(trimmed)) continue
+
+    const rule = getRule(item?.j || '')
+    if (rule === 'CP' || rule === 'IP') {
+      indentLevel = Math.max(0, indentLevel - 1)
+    }
+
+    const lineIndent = (rule === 'ACP' || rule === 'AIP')
+      ? indentLevel + 1
+      : indentLevel
+    const indent = '    '.repeat(Math.max(0, lineIndent))
+
+    out.push({
+      left: `${indent}${counter}. ${trimmed}`,
+      right: item.j?.trim() || ""
+    })
+
+    if (rule === 'ACP' || rule === 'AIP') {
+      indentLevel += 1
+    }
+    counter++
+  }
   return out
 }
 
@@ -210,4 +236,3 @@ export async function exportWorksheetPDF(worksheet) {
     throw new Error(error?.message || error?.toString() || 'Failed to export PDF')
   }
 }
-

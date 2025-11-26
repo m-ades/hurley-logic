@@ -76,9 +76,10 @@ export default class JustificationInput extends FormulaInput {
         // sort stuff
         nums = nums.sort((a, b) => (a - b));
         ranges = ranges.sort(([a,b],[c,d]) => ((a-c==0) ? b-d : a-c));
+        const forceUpper = new Set(['UI','UG','EI','EG','MP','MT','HS','DS','CD','DN','DM','CQ','QN','CP','IP','ACP','AIP']);
         citedrules = citedrules.map(rule => {
             if (rule.length === 0) return rule;
-            if (rule.length === 2 && ['UI', 'UG', 'EI', 'EG', 'MP', 'MT', 'HS', 'DS', 'CD', 'DN', 'DM', 'CQ', 'QN'].includes(rule.toUpperCase())) {
+            if (forceUpper.has(rule.toUpperCase())) {
                 return rule.toUpperCase();
             }
             return rule.charAt(0).toUpperCase() + rule.slice(1).toLowerCase();
@@ -111,5 +112,4 @@ export default class JustificationInput extends FormulaInput {
         }
     }
 }
-
 
