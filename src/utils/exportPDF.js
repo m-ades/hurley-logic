@@ -176,7 +176,7 @@ export async function exportWorksheetPDF(worksheet) {
   doc.setFontSize(12)
   y += lh * 2
 
-  worksheet.proofs.forEach(proof => {
+  worksheet.proofs.forEach((proof, idx) => {
     if (!proof.savedState?.ans?.parts) return // skip untouched proofs
 
     let index = 1
@@ -202,6 +202,9 @@ export async function exportWorksheetPDF(worksheet) {
     }
     const MIN_COLUMN = 260
     const columnX = marginLeft + Math.max(leftWidth + 12, MIN_COLUMN)
+
+    write(marginLeft, `QUESTION ${proof.questionId || idx + 1}`)
+    y += lh
 
     // print premises with conclusion aligned on last premise
     proof.premises.forEach((prem, i) => {
