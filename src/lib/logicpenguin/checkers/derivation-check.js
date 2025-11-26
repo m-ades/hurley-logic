@@ -1212,7 +1212,7 @@ export class formFit {
                 (assumptionLine?.s ? Formula.from(assumptionLine.s) : null);
             if (assumptionFormula?.freevars?.includes?.(x)) {
                 this.possible = false;
-                this.message = 'UG cannot be used on a variable that is free in an open assumption.';
+                this.message = 'UG cannot be used on a free instantial variable in CP or IP.';
                 return;
             }
         }
