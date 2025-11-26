@@ -559,6 +559,7 @@ export default class DerivationCheck {
         let indentLevel = 0;
         const assumptionStack = [];
         for (const line of this.deriv.lines) {
+            line.openAssumptions = [...assumptionStack];
             if (typeof line.indent !== 'number') {
                 line.indent = 0;
             }
@@ -1205,6 +1206,16 @@ export class formFit {
         }
         const x = psi.boundvar;
         const phi = psi.right;
+        const openAssumptions = this.line?.openAssumptions ?? [];
+        for (const assumptionLine of openAssumptions) {
+            const assumptionFormula = assumptionLine?.formula ??
+                (assumptionLine?.s ? Formula.from(assumptionLine.s) : null);
+            if (assumptionFormula?.freevars?.includes?.(x)) {
+                this.possible = false;
+                this.message = 'UG cannot be used on a variable that is free in an open assumption.';
+                return;
+            }
+        }
         if (!this.line.citedlines || this.line.citedlines.length == 0) {
             this.possible = false;
             this.message = 'UG requires citing a line.';
