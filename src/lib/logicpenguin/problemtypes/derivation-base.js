@@ -342,15 +342,6 @@ export default class DerivationExercise extends LogicPenguinProblem {
                 indentLevel = Math.max(indentLevel - 1, 0);
                 line.indent = indentLevel;
                 const end = lnNum - 1;
-                if (open && end >= open.start && line?.jinput) {
-                    const desired = `${open.start}${dash}${end} ${rule}`;
-                    const current = line.jinput.value.trim();
-                    const looksAuto = current === '' ||
-                        /^[0-9?]+[–-][0-9?]+\s+[A-Za-z]+$/.test(current);
-                    if (looksAuto) {
-                        line.jinput.value = desired;
-                    }
-                }
             } else {
                 line.indent = indentLevel;
             }
