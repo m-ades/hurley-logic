@@ -654,17 +654,19 @@ export default class DerivationCheck {
             return line;
         }
         const antecedent = parts[0].trim();
-        const assumptionLine = this.findMostRecentOpenAssumption(
-            line, "ACP", antecedent
-        );
-        if (!assumptionLine) {
+        const assumptionLine = line.closedAssumption;
+        if (!assumptionLine || this.resolveRuleName(assumptionLine) !== 'ACP') {
             this.adderror(line.n, "rule", "high",
-                "CP requires a matching ACP assumption in scope.");
+                "CP requires a matching ACP to discharge.");
             return line;
         }
-        if (line.closedAssumption && line.closedAssumption !== assumptionLine) {
+        const Formula = this.Formula;
+        const assumptionFormula = assumptionLine?.formulaNormal ??
+            (assumptionLine?.s ? Formula.from(assumptionLine.s).normal : '');
+        const antecedentNorm = Formula.from(antecedent).normal;
+        if (assumptionFormula !== antecedentNorm) {
             this.adderror(line.n, "rule", "high",
-                "CP must discharge the most recent matching assumption.");
+                "CP requires an ACP with the same antecedent.");
             return line;
         }
         line.checkedOK = true;
@@ -677,24 +679,16 @@ export default class DerivationCheck {
                 "IP requires a conclusion formula.");
             return line;
         }
-        const assumptionLine =
-            (line.closedAssumption && this.resolveRuleName(line.closedAssumption) === 'AIP')
-                ? line.closedAssumption
-                : this.findMostRecentOpenAssumption(line, "AIP", null);
-        if (!assumptionLine) {
+        const assumptionLine = line.closedAssumption;
+        if (!assumptionLine || this.resolveRuleName(assumptionLine) !== 'AIP') {
             this.adderror(line.n, "rule", "high",
-                "IP requires an AIP assumption in scope.");
+                "IP requires a matching AIP to discharge.");
             return line;
         }
         const expected = "~" + (assumptionLine.formulaNormal ?? '').trim();
         if (line.formulaNormal.trim() !== expected) {
             this.adderror(line.n, "rule", "high",
                 "IP conclusion must be the negation of the AIP assumption.");
-            return line;
-        }
-        if (line.closedAssumption && line.closedAssumption !== assumptionLine) {
-            this.adderror(line.n, "rule", "high",
-                "IP must discharge the most recent matching assumption.");
             return line;
         }
         line.checkedOK = true;

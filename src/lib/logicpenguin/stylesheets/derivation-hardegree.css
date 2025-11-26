@@ -192,6 +192,9 @@
     font-size: inherit;
     font-weight: inherit;
     line-height: inherit;
+    display: inline-block;
+    min-width: 2.5em;
+    text-align: right;
 }
 
 .logicpenguin derivation-hardegree .derivationlinenumber::before {
