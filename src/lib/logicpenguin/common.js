@@ -10,11 +10,8 @@
 // Common functions
 
 const localcheckers = {};
-
-// Static import map for checkers - Vite needs this for proper bundling
-const checkerImports = {
-    'derivation-hardegree': () => import('./checkers/derivation-hardegree.js')
-};
+// Pre-declare all checker modules so Vite can statically analyze imports
+const checkerImports = import.meta.glob('./checkers/**/*.js');
 
 // determine URL
 export const url = new URL(import.meta.url).origin;
@@ -143,14 +140,12 @@ export async function localCheck(prob) {
     // load checker if need be
     if (!localcheckers[problemtype]) {
         try {
-            // Use static import map for Vite bundling
-            if (problemtype in checkerImports) {
-                const imported = await checkerImports[problemtype]();
+            const importer = checkerImports[`./checkers/${problemtype}.js`];
+            if (importer) {
+                const imported = await importer();
                 localcheckers[problemtype] = imported.default;
             } else {
-                // Fallback to dynamic import for other checkers
-                const imported = await import('./checkers/' + problemtype + '.js');
-                localcheckers[problemtype] = imported.default;
+                throw new Error('Unknown checker: ' + problemtype);
             }
         } catch(err) {
             // report error if cannot be loaded
