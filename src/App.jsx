@@ -29,12 +29,24 @@ export default function App() {
     if (!currentWorksheet) return
     
     try {
+      let liveState = null
+      try {
+        const derivEl = document.querySelector('derivation-hardegree')
+        if (derivEl?.getState && !derivEl._isRestoring) {
+          liveState = derivEl.getState()
+        }
+      } catch (err) {
+        console.warn('Could not capture live proof state for export:', err)
+      }
+
       const allStates = currentWorksheet.proofs.map(proof => ({
         id: proof.id,
         questionId: proof.questionId,
         premises: proof.premises,
         conclusion: proof.conclusion,
-        savedState: getSavedProofState(proof.id)
+        savedState: proof.id === currentProof?.id && liveState
+          ? liveState
+          : getSavedProofState(proof.id)
       }))
       
       const exportData = {
