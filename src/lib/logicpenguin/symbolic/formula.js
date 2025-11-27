@@ -426,9 +426,9 @@ function generateFormulaClass(notationname) {
             // has no pletter, which is not ok
             if (!match) {
                 this._pletter = false;
-                this.syntaxError('an atomic (sub)formula must use a letter in '
-                    + 'the range ' + Formula.syntax.notation.predicatesRange +
-                    ' and this does not');
+                this.syntaxError('Syntax error: formulas must start with '
+                    + 'an uppercase predicate letter (A–Z) or =/≠; lowercase '
+                    + 'predicates (Hurley style) are not accepted here.');
                 return this._pletter;
             }
             // position should be 0, or 2 in the case of =; may need to
