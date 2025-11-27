@@ -24,7 +24,7 @@ function TabPanel(props) {
           overflowX: 'auto', 
           minWidth: 0, 
           width: '100%',
-          height: 'calc(100vh - 200px)',
+          height: { xs: 'calc(100vh - 220px)', md: 'calc(100vh - 200px)', lg: 'calc(100vh - 180px)' },
           overflowY: 'auto',
         }}>
           {children}

@@ -3,8 +3,14 @@ import { Box, Container, Typography, Tooltip, Select, MenuItem, FormControl } fr
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RulesReference from './rulesreference.jsx'
 
-export default function Layout({ title, score, total, scoreStyle, currentProofId, completedProofs, children, worksheets, currentWorksheetIndex, onWorksheetIndexChange, onExportClick }) {
+export default function Layout({ title, subtitle, score, total, scoreStyle, currentProofId, completedProofs, children, worksheets, currentWorksheetIndex, onWorksheetIndexChange, onExportClick }) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [isTouchDevice] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return window.matchMedia && window.matchMedia('(hover: none)').matches
+  })
+  const handleOpen = () => setDropdownOpen(true)
+  const handleClose = () => setDropdownOpen(false)
   return (
     <>
       <Box
@@ -38,19 +44,24 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
         <Container maxWidth="lg" sx={{ mx: 'auto', px: { xs: 1, sm: 2, md: 4 } }}>
           <Box
             sx={{
-              width: { xs: '100%', md: 'calc(100% - 210px)' },
+              width: { xs: '100%', lg: 'calc(100% - 210px)' },
               pb: 1,
               ml: { xs: 0, md: 0 },
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: 2,
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+              gap: 0.25,
             }}
           >
             <Typography variant="h5" gutterBottom sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1.25rem', md: '1.5rem' }, mb: 0 }}>
               {title}
             </Typography>
+            {subtitle && (
+              <Typography variant="body2" sx={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: { xs: '0.9rem', md: '1rem' }, mt: 0.25, mb: 0 }}>
+                {subtitle}
+              </Typography>
+            )}
           </Box>
         </Container>
       </Box>
@@ -62,14 +73,15 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
       />
       <Box
         sx={{
-          transform: { xs: 'none', md: 'scale(0.85)' },
+          transform: 'none',
           transformOrigin: 'top left',
-          width: { xs: '100%', md: '117.65%' }, 
+          width: '100%',
           marginLeft: { xs: 0, md: 0 },
           position: 'relative',
+          overflowX: 'hidden',
         }}
       >
-        <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 }, position: 'relative', zIndex: 1, mx: 0, px: { xs: 1, sm: 2, md: 4 }, ml: { xs: 0, md: 'auto' }, mr: { xs: 0, md: 210 } }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 }, position: 'relative', zIndex: 1, mx: 0, px: { xs: 1, sm: 2, md: 4 }, ml: { xs: 0, md: 'auto' }, mr: { xs: 0, md: 0, lg: 340 } }}>
           <Box sx={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -133,15 +145,17 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
             {worksheets && (
               <FormControl 
                 sx={{ minWidth: 'auto' }}
-                onMouseEnter={() => setDropdownOpen(true)}
-                onMouseLeave={() => setDropdownOpen(false)}
+                {...(!isTouchDevice ? { onMouseEnter: handleOpen, onMouseLeave: handleClose } : {})}
               >
                 <Select
                   value={currentWorksheetIndex}
-                  onChange={(e) => onWorksheetIndexChange(e.target.value)}
+                  onChange={(e) => {
+                    onWorksheetIndexChange(e.target.value)
+                    handleClose()
+                  }}
                   open={dropdownOpen}
-                  onOpen={() => setDropdownOpen(true)}
-                  onClose={() => setDropdownOpen(false)}
+                  onOpen={handleOpen}
+                  onClose={handleClose}
                   displayEmpty
                   sx={{
                     fontFamily: '"IBM Plex Sans", sans-serif',
@@ -172,14 +186,18 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
                       fontSize: '1.2rem',
                     },
                   }}
-                  MenuProps={{
-                    onMouseEnter: () => setDropdownOpen(true),
-                    onMouseLeave: () => setDropdownOpen(false),
-                    PaperProps: {
-                      onMouseEnter: () => setDropdownOpen(true),
-                      onMouseLeave: () => setDropdownOpen(false),
-                    },
-                  }}
+                  MenuProps={
+                    !isTouchDevice
+                      ? {
+                          onMouseEnter: handleOpen,
+                          onMouseLeave: handleClose,
+                          PaperProps: {
+                            onMouseEnter: handleOpen,
+                            onMouseLeave: handleClose,
+                          },
+                        }
+                      : undefined
+                  }
                 >
                   {worksheets.map((worksheet, idx) => {
                     const worksheetCompleted = worksheet.proofs.every(p => completedProofs.has(p.id));
@@ -204,4 +222,3 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
     </>
   )
 }
-

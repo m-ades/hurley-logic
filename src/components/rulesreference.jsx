@@ -191,13 +191,13 @@ export default function RulesReference() {
           position: 'fixed',
           right: 0,
           top: { xs: 8, md: 16 },
-          transform: { xs: 'none', md: 'scale(0.85)' },
+          transform: { xs: 'none', lg: 'scale(0.85)' },
           transformOrigin: 'top right',
           zIndex: 101,
           maxHeight: '90vh',
           overflowY: 'auto',
           pr: { xs: 1, md: 2 },
-          display: { xs: 'none', md: 'block' },
+          display: { xs: 'none', lg: 'block' },
         }}
       >
         {rulesContent}
@@ -213,7 +213,7 @@ export default function RulesReference() {
           bottom: 16,
           right: 16,
           zIndex: 1000,
-          display: { xs: 'flex', md: 'none' },
+          display: { xs: 'flex', lg: 'none' },
           backgroundColor: '#8155ba',
           '&:hover': {
             backgroundColor: '#6a4499',
@@ -232,7 +232,7 @@ export default function RulesReference() {
           keepMounted: true,
         }}
         sx={{
-          display: { xs: 'block', md: 'none' },
+          display: { xs: 'block', lg: 'none' },
           '& .MuiDrawer-paper': {
             width: { xs: '85%', sm: '400px' },
             maxWidth: '400px',

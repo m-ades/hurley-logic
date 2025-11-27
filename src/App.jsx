@@ -67,7 +67,8 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <Layout
-        title="Natural Deduction Proofs (Predicate Logic)"
+        title="PHILO 275"
+        subtitle="Predicate Logic: Natural Deduction"
         score={score}
         total={currentWorksheet?.proofs.length || 0}
         scoreStyle={scoreStyle}
