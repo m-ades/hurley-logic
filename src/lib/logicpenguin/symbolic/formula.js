@@ -428,7 +428,7 @@ function generateFormulaClass(notationname) {
                 this._pletter = false;
                 this.syntaxError('Syntax error: formulas must start with '
                     + 'an uppercase predicate letter (A–Z) or =/≠; lowercase '
-                    + 'predicates (Hurley style) are not accepted here.');
+                    + 'predicates are not accepted.');
                 return this._pletter;
             }
             // position should be 0, or 2 in the case of =; may need to
