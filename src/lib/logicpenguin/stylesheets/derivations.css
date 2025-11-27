@@ -112,6 +112,7 @@
 .logicpenguin sub-derivation .subderivbuttons > div:hover {
     opacity: 0.9;
     box-shadow: 1.5px 1.5px 4px rgba(190, 190, 190, 0.3), -1.5px -1.5px 4px rgba(255, 255, 255, 0.5);
+    color: #8155ba;
 }
 
 .logicpenguin sub-derivation .subderivbuttons > div:focus,
@@ -181,7 +182,14 @@
     padding-left: 0.3ex;
     top: 0.2rem;
     user-select: none;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.logicpenguin sub-derivation .derivationline:hover .jbwrap div .derivlineactionbutton {
     display: inline-block;
+    opacity: 1;
 }
 
 .logicpenguin sub-derivation .derivationline .derivlineactionbutton > .material-symbols-outlined {
@@ -267,7 +275,7 @@
     }
 }
 .logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .good {
-    color: #beafc2;
+    color: #76b947;
 }
 .logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .incomplete {
     color: var(--lpgray4);
@@ -292,7 +300,7 @@
     background-color: var(--lpgreen);
 }
 .logicpenguin sub-derivation .derivlinebuttons .derivlinecheck .unchecked {
-    color: var(--lpgray5);
+    display: none;
 }
 .logicpenguin sub-derivation .derivlinebuttons .derivlinecheck.hideunchecked .unchecked {
     display: none;

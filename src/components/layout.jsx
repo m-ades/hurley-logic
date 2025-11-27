@@ -1,9 +1,10 @@
-import { Box, Container, Typography, Select, MenuItem, FormControl, IconButton, Tooltip } from '@mui/material'
+import { useState } from 'react'
+import { Box, Container, Typography, Tooltip, Select, MenuItem, FormControl } from '@mui/material'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import DownloadIcon from '@mui/icons-material/Download'
 import RulesReference from './rulesreference.jsx'
 
 export default function Layout({ title, score, total, scoreStyle, currentProofId, completedProofs, children, worksheets, currentWorksheetIndex, onWorksheetIndexChange, onExportClick }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false)
   return (
     <>
       <Box
@@ -38,96 +39,24 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
           <Box
             sx={{
               width: { xs: '100%', md: 'calc(100% - 210px)' },
-              pb: 2,
+              pb: 1,
               ml: { xs: 0, md: 0 },
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 2,
             }}
           >
-            <Typography variant="h5" gutterBottom sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1.25rem', md: '1.5rem' } }}>
-                {title}
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1, flexWrap: 'wrap' }}>
-              <Typography variant="h6" sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1rem', md: '1.25rem' } }}>
-                  <span style={scoreStyle}>{score}</span> / {total}
-                </Typography>
-                {completedProofs.has(currentProofId) && (
-                <CheckCircleIcon sx={{ color: '#beafc2', fontSize: { xs: 20, md: 28 } }} />
-                )}
-                {onExportClick && (
-                  <Tooltip title="download your work">
-                    <IconButton
-                      onClick={onExportClick}
-                      sx={{
-                        color: 'rgba(0, 0, 0, 0.9)',
-                        fontSize: { xs: '1rem', md: '1.25rem' },
-                        padding: '0.5rem',
-                        '&:hover': {
-                          backgroundColor: 'rgba(129, 85, 186, 0.08)',
-                        },
-                      }}
-                      aria-label="Export PDF"
-                    >
-                      <DownloadIcon sx={{ fontSize: { xs: 20, md: 24 } }} />
-                    </IconButton>
-                  </Tooltip>
-                )}
-                {worksheets && (
-                  <FormControl sx={{ minWidth: 'auto', ml: 2 }}>
-                    <Select
-                      value={currentWorksheetIndex}
-                      onChange={(e) => onWorksheetIndexChange(e.target.value)}
-                      displayEmpty
-                      sx={{
-                        fontFamily: '"IBM Plex Sans", sans-serif',
-                        fontSize: '0.875rem',
-                        color: 'rgba(0, 0, 0, 0.9)',
-                        borderRadius: '5px',
-                        backgroundColor: 'transparent',
-                        boxShadow: '3px 3px 8px rgba(190, 190, 190, 0.4), -3px -3px 8px rgba(255, 255, 255, 0.5)',
-                        opacity: 0.9,
-                        padding: '0.75rem 1.5rem',
-                        height: 'auto',
-                        '& .MuiSelect-select': {
-                          padding: '0 !important',
-                          paddingRight: '2rem !important',
-                        },
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          border: 'none',
-                        },
-                        '&:hover': {
-                          opacity: 0.9,
-                        },
-                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                          border: 'none',
-                        },
-                        '& .MuiSelect-icon': {
-                          color: 'rgba(0, 0, 0, 0.9)',
-                          right: '0.75rem',
-                        },
-                      }}
-                    >
-                      {worksheets.map((worksheet, idx) => {
-                        const worksheetCompleted = worksheet.proofs.every(p => completedProofs.has(p.id));
-                        return (
-                          <MenuItem key={worksheet.id} value={idx} sx={{ fontFamily: '"IBM Plex Sans", sans-serif' }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
-                              <span>{worksheet.title}</span>
-                              {worksheetCompleted && (
-                                <CheckCircleIcon sx={{ color: '#beafc2', fontSize: 16 }} />
-                              )}
-                            </Box>
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  </FormControl>
-                )}
-            </Box>
+            <Typography variant="h5" gutterBottom sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1.25rem', md: '1.5rem' }, mb: 0 }}>
+              {title}
+            </Typography>
           </Box>
         </Container>
       </Box>
       <Box
         sx={{
-          height: { xs: '100px', md: '120px' },
+          height: { xs: '50px', md: '60px' },
           flexShrink: 0,
         }}
       />
@@ -141,6 +70,134 @@ export default function Layout({ title, score, total, scoreStyle, currentProofId
         }}
       >
         <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 }, position: 'relative', zIndex: 1, mx: 0, px: { xs: 1, sm: 2, md: 4 }, ml: { xs: 0, md: 'auto' }, mr: { xs: 0, md: 210 } }}>
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 2, 
+            mb: 2, 
+            flexWrap: 'wrap',
+            pl: { xs: 0, md: '224px' }, //align with proof box
+          }}>
+            <Typography variant="h6" sx={{ color: 'rgba(0, 0, 0, 0.9)', fontSize: { xs: '1rem', md: '1.25rem' } }}>
+              <span style={scoreStyle}>{score}</span> / {total}
+            </Typography>
+            {score === total && total > 0 && (
+              <CheckCircleIcon sx={{ color: '#beafc2', fontSize: { xs: 20, md: 28 } }} />
+            )}
+            {onExportClick && (
+              <Tooltip title="export ur answers to pdf">
+                <button
+                  onClick={onExportClick}
+                  className="action_has has_saved"
+                  aria-label="Export PDF"
+                  type="button"
+                  style={{
+                    margin: 0,
+                    minWidth: 'auto',
+                  }}
+                >
+                  <svg
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    fill="none"
+                  >
+                    <path
+                      d="m19,21H5c-1.1,0-2-.9-2-2V5c0-1.1.9-2,2-2h11l5,5v11c0,1.1-.9,2-2,2Z"
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                      data-path="box"
+                    />
+                    <path
+                      d="M7 3L7 8L15 8"
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                      data-path="line-top"
+                    />
+                    <path
+                      d="M17 20L17 13L7 13L7 20"
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                      data-path="line-bottom"
+                    />
+                  </svg>
+                </button>
+              </Tooltip>
+            )}
+            {worksheets && (
+              <FormControl 
+                sx={{ minWidth: 'auto' }}
+                onMouseEnter={() => setDropdownOpen(true)}
+                onMouseLeave={() => setDropdownOpen(false)}
+              >
+                <Select
+                  value={currentWorksheetIndex}
+                  onChange={(e) => onWorksheetIndexChange(e.target.value)}
+                  open={dropdownOpen}
+                  onOpen={() => setDropdownOpen(true)}
+                  onClose={() => setDropdownOpen(false)}
+                  displayEmpty
+                  sx={{
+                    fontFamily: '"IBM Plex Sans", sans-serif',
+                    fontSize: { xs: '0.875rem', md: '1rem' },
+                    color: 'rgba(0, 0, 0, 0.9)',
+                    borderRadius: '0.375rem',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    padding: '0.4rem 0.5rem',
+                    height: 'auto',
+                    minWidth: '120px',
+                    '& .MuiSelect-select': {
+                      padding: '0 !important',
+                      paddingRight: '1.5rem !important',
+                    },
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      border: 'none',
+                    },
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      border: 'none',
+                    },
+                    '& .MuiSelect-icon': {
+                      color: 'rgba(0, 0, 0, 0.6)',
+                      right: '0.5rem',
+                      fontSize: '1.2rem',
+                    },
+                  }}
+                  MenuProps={{
+                    onMouseEnter: () => setDropdownOpen(true),
+                    onMouseLeave: () => setDropdownOpen(false),
+                    PaperProps: {
+                      onMouseEnter: () => setDropdownOpen(true),
+                      onMouseLeave: () => setDropdownOpen(false),
+                    },
+                  }}
+                >
+                  {worksheets.map((worksheet, idx) => {
+                    const worksheetCompleted = worksheet.proofs.every(p => completedProofs.has(p.id));
+                    return (
+                      <MenuItem key={worksheet.id} value={idx} sx={{ fontFamily: '"IBM Plex Sans", sans-serif', fontSize: { xs: '0.875rem', md: '1rem' } }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                          <span>{worksheet.title}</span>
+                          {worksheetCompleted && (
+                            <CheckCircleIcon sx={{ color: '#beafc2', fontSize: 16 }} />
+                          )}
+                        </Box>
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            )}
+          </Box>
           {children}
         </Container>
       </Box>

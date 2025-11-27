@@ -92,6 +92,7 @@ export default function ProofTabs({
             transition: 'all 0.2s ease',
             minWidth: { xs: 'auto', md: 200 },
             fontSize: { xs: '0.875rem', md: '1rem' },
+            textTransform: 'none',
             '&:hover': {
               color: '#8155ba',
               backgroundColor: 'rgba(129, 85, 186, 0.08)',
@@ -111,7 +112,7 @@ export default function ProofTabs({
             key={proof.id}
             label={
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, width: '100%' }}>
-                <span>Question {proof.questionId || proof.id}</span>
+                <span>Problem {proof.questionId || proof.id}</span>
                 {completedProofs.has(proof.id) && (
                   <CheckCircleIcon sx={{ color: '#beafc2', fontSize: 16 }} />
                 )}
@@ -141,9 +142,6 @@ export default function ProofTabs({
         <TabPanel key={proof.id} value={currentProofIndex} index={idx}>
           <Stack spacing={3} sx={{ minWidth: 0 }}>
             <Box sx={{ minWidth: 0 }}>
-              <Typography variant="h6" gutterBottom sx={{ color: 'rgba(0, 0, 0, 0.9)', fontFamily: '"IBM Plex Sans", sans-serif' }}>
-                Question {proof.questionId || proof.id}
-              </Typography>
               {proof.description && (
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 3, fontFamily: '"IBM Plex Sans", sans-serif' }}>
                   {proof.description}

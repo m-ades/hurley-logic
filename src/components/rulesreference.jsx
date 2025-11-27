@@ -8,19 +8,19 @@ function RulesCard({ title, children, defaultExpanded = false }) {
   const [expanded, setExpanded] = useState(defaultExpanded)
 
   return (
-    <Box
-      sx={{
-        width: { xs: '100%', md: '380px' },
-        mb: 1,
-      }}
-    >
-      <Box 
+      <Box
+        sx={{
+          width: { xs: '100%', md: '280px' },
+          mb: 1,
+        }}
+      >
+        <Box 
         onClick={() => setExpanded(!expanded)}
         sx={{ 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'space-between',
-          padding: '12px 16px',
+          padding: '10px 12px',
           color: '#beafc2',
           cursor: 'pointer',
           transition: 'all 0.2s ease',
@@ -35,7 +35,7 @@ function RulesCard({ title, children, defaultExpanded = false }) {
           sx={{ 
             color: 'inherit',
             fontWeight: expanded ? 600 : 400,
-            fontSize: '1rem',
+            fontSize: '0.9rem',
           }}
         >
           {title}
@@ -61,8 +61,8 @@ function RulesCard({ title, children, defaultExpanded = false }) {
             fontSize: '0.9rem', 
             lineHeight: 1.5, 
             color: 'rgba(0, 0, 0, 0.9)',
-            padding: '12px 16px',
-            paddingTop: '8px',
+            padding: '8px 12px',
+            paddingTop: '6px',
           }}
         >
           {children}
@@ -80,7 +80,7 @@ export default function RulesReference() {
       sx={{
         height: '100%',
         overflowY: 'auto',
-        p: 2,
+        p: 1.5,
       }}
     >
       <RulesCard title="Keyboard Shortcuts" defaultExpanded={true}>
@@ -189,15 +189,13 @@ export default function RulesReference() {
       <Box
         sx={{
           position: 'fixed',
-          right: { xs: 8, md: 16 },
+          right: 0,
           top: { xs: 8, md: 16 },
           transform: { xs: 'none', md: 'scale(0.85)' },
           transformOrigin: 'top right',
           zIndex: 101,
           maxHeight: '90vh',
           overflowY: 'auto',
-          borderRight: 1,
-          borderColor: 'divider',
           pr: { xs: 1, md: 2 },
           display: { xs: 'none', md: 'block' },
         }}

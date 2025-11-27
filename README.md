@@ -1,11 +1,11 @@
 # Logic Proof Practice App
 
-An interactive static web app (client-side only) for practicing formal logic proofs using Hurley's notation. Built with React. All validation happens locally in the browser - no backend required.
+Static React web app for practicing formal logic proofs in Hurley’s notation for PHILO 275 at Hunter College. This repo is mostly for working out the question format and proof-checking system for a future logic learning platform.
 
 
 ## Tech Stack
 
-- **React 18**
+- **React**
 - **Material UI**
 - **Vite**
 
