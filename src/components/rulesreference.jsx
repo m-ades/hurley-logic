@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Box, Typography, IconButton, Drawer, Fab } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { Box, Typography, IconButton, Drawer, Fab, useTheme, useMediaQuery } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
@@ -74,6 +74,14 @@ function RulesCard({ title, children, defaultExpanded = false }) {
 
 export default function RulesReference() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const theme = useTheme()
+  const isNarrow = useMediaQuery(theme.breakpoints.down('lg'))
+
+  useEffect(() => {
+    if (isNarrow) {
+      setMobileOpen(true)
+    }
+  }, [isNarrow])
   
   const rulesContent = (
     <Box
