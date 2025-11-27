@@ -248,7 +248,7 @@ export default function RulesReference() {
         }}
       >
         <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6">Rules Reference</Typography>
+          <Typography variant="h6">Information</Typography>
           <IconButton onClick={() => setMobileOpen(false)}>
             <ExpandLessIcon />
           </IconButton>

@@ -97,7 +97,7 @@
     user-select: none;
     margin-bottom: 0.3ex;
     border: none;
-    box-shadow: 2px 2px 5px rgba(190, 190, 190, 0.3), -2px -2px 5px rgba(255, 255, 255, 0.5);
+    box-shadow: none;
     transition: all 0.6s ease;
     font-weight: 700;
     opacity: 0.9;
@@ -218,6 +218,31 @@
 
 .logicpenguin sub-derivation .derivationline .derivlineactionbutton:active > .material-symbols-outlined {
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+.logicpenguin .subderivsymbolbar {
+    display: inline-flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-left: 8px;
+}
+
+.logicpenguin .subderivsymbolbar__btn {
+    padding: 2px 6px;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--lpbgwhite);
+    font-size: 0.9em;
+    line-height: 1.2;
+    color: var(--lpgray1);
+    cursor: pointer;
+    user-select: none;
+}
+
+.logicpenguin .subderivsymbolbar__btn:hover {
+    color: var(--lpblack);
+    background-color: var(--lpgray7);
 }
 
 
@@ -549,4 +574,3 @@
         overflow-x: hidden !important;
     }
 }
-

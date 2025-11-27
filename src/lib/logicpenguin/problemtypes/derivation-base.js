@@ -831,6 +831,60 @@ export class SubDerivation extends HTMLElement {
                 this.myprob.clToggle.classList.add("hidden");
             }
         }
+
+        // symbol shortcuts row after check/add controls
+        const symbar = addelem('div', this.buttons, {
+            classes: ['subderivsymbolbar']
+        });
+        const pickTargetInput = () => {
+            const active = document.activeElement;
+            if (active && this.contains(active) && active.tagName === 'INPUT' && !active.readOnly) {
+                return active;
+            }
+            const lastFocused = this?.myprob?.lastFocusedInput;
+            if (lastFocused && this.contains(lastFocused) && !lastFocused.readOnly) {
+                return lastFocused;
+            }
+            const firstInput = this.querySelector('input.formulainput:not([readonly])');
+            if (firstInput) return firstInput;
+            const firstJ = this.querySelector('input.justification:not([readonly])');
+            return firstJ;
+        };
+        const symTargets = [
+            { label: this.myprob?.symbols?.NOT, action: (input) => input.insertHere(this.myprob.symbols.NOT) },
+            { label: this.myprob?.symbols?.AND, action: (input) => input.insOp && input.insOp('AND') },
+            { label: this.myprob?.symbols?.OR, action: (input) => input.insOp && input.insOp('OR') },
+            { label: this.myprob?.symbols?.IFTHEN, action: (input) => input.insOp && input.insOp('IFTHEN') },
+            { label: this.myprob?.symbols?.IFF, action: (input) => input.insOp && input.insOp('IFF') },
+            { label: this.myprob?.symbols?.FORALL && `(${this.myprob.symbols.FORALL}x)`, action: (input) => {
+                const text = `(${this.myprob.symbols.FORALL}x)`;
+                input.setRangeText(text, input.selectionStart ?? input.value.length, input.selectionEnd ?? input.value.length, 'end');
+            }},
+            { label: this.myprob?.symbols?.EXISTS && `(${this.myprob.symbols.EXISTS}x)`, action: (input) => {
+                const text = `(${this.myprob.symbols.EXISTS}x)`;
+                input.setRangeText(text, input.selectionStart ?? input.value.length, input.selectionEnd ?? input.value.length, 'end');
+            }},
+        ].filter(btn => btn.label);
+
+        symTargets.forEach(({ label, action }) => {
+            const btn = addelem('div', symbar, {
+                classes: ['subderivsymbolbar__btn'],
+                textContent: label,
+                onclick: (e) => {
+                    e.preventDefault();
+                    const target = pickTargetInput();
+                    if (!target) return;
+                    action(target);
+                    const pos = target.selectionStart ?? target.value.length;
+                    target.focus();
+                    target.setSelectionRange(pos, pos);
+                    if (target?.myline?.mysubderiv?.myprob.makeChanged) {
+                        target.myline.mysubderiv.myprob.makeChanged(false, true);
+                    }
+                }
+            });
+            btn.tabIndex = 0;
+        });
     }
 
     addLine(s, showline = false) {
@@ -904,6 +958,12 @@ export class SubDerivation extends HTMLElement {
         line.jinput.enterHook = function(e) {
             this.tabHook(e, true);
         }
+        line.jinput.addEventListener('touchstart', function() {
+            if (document.activeElement !== this) {
+                this.focus();
+                this.setSelectionRange(this.value.length, this.value.length);
+            }
+        });
         // buttons following justification input
         line.buttons = addelem('div', jwrap, {
             classes: ['derivlinebuttons']
@@ -989,6 +1049,12 @@ export class SubDerivation extends HTMLElement {
         line.input.enterHook = function(e) {
             this.tabHook(e, true);
         }
+        line.input.addEventListener('touchstart', function() {
+            if (document.activeElement !== this) {
+                this.focus();
+                this.setSelectionRange(this.value.length, this.value.length);
+            }
+        });
         if (s && s != '') {
             line.input.value = s;
             line.numbox.classList.remove("invisible");
@@ -1320,6 +1386,9 @@ export class SubDerivation extends HTMLElement {
             this?.myline?.mysubderiv?.myprob) {
             this.myline.mysubderiv.myprob.lastfocusedJ =
                 this.myline.jinput
+        }
+        if (this?.myline?.mysubderiv?.myprob) {
+            this.myline.mysubderiv.myprob.lastFocusedInput = this;
         }
     }
 

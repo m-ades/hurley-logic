@@ -583,34 +583,8 @@ function makeSymbolWidgetFor(notationname) {
         // function to show up for a given input; may have options to
         // show or hide falsum, or show or hide quantifier symbols
         symbolwidget.showfor = function(elem) {
-            document.body.appendChild(this);
-            this.targetInput = elem;
-            if (this.buttonfor['FALSUM']) {
-                if (elem.nofalsum) {
-                    this.buttonfor['FALSUM'].classList.add("hidden");
-                } else {
-                    this.buttonfor['FALSUM'].classList.remove("hidden");
-                }
-            }
-            for (const q of ['FORALL', 'EXISTS']) {
-                if (this.buttonfor[q]) {
-                    if (elem.pred && (!( q == 'FORALL' &&
-                    (this.syntax.notation.quantifierForm.search('\\?') >= 0)) )) {
-                        this.buttonfor[q].classList.remove("hidden");
-                    } else {
-                        this.buttonfor[q].classList.add("hidden");
-                    }
-                }
-            }
-            if (!elem.pred || !(elem?.identity)) {
-                if (this?.buttonfor?.NONIDENTITY){
-                    this.buttonfor.NONIDENTITY.classList.add('hidden')
-                }
-            } else {
-                 if (this?.buttonfor?.NONIDENTITY){
-                    this.buttonfor.NONIDENTITY.classList.remove('hidden')
-                }
-            }
+            // no-op: shortcuts are handled inline; avoid floating widget
+            return;
         }
 
         // hide it when not in use by removing from DOM
