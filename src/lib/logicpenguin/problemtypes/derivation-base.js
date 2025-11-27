@@ -958,12 +958,6 @@ export class SubDerivation extends HTMLElement {
         line.jinput.enterHook = function(e) {
             this.tabHook(e, true);
         }
-        line.jinput.addEventListener('touchstart', function() {
-            if (document.activeElement !== this) {
-                this.focus();
-                this.setSelectionRange(this.value.length, this.value.length);
-            }
-        });
         // buttons following justification input
         line.buttons = addelem('div', jwrap, {
             classes: ['derivlinebuttons']
@@ -1049,12 +1043,6 @@ export class SubDerivation extends HTMLElement {
         line.input.enterHook = function(e) {
             this.tabHook(e, true);
         }
-        line.input.addEventListener('touchstart', function() {
-            if (document.activeElement !== this) {
-                this.focus();
-                this.setSelectionRange(this.value.length, this.value.length);
-            }
-        });
         if (s && s != '') {
             line.input.value = s;
             line.numbox.classList.remove("invisible");
