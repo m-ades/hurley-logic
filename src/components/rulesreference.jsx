@@ -77,11 +77,24 @@ export default function RulesReference() {
   const theme = useTheme()
   const isNarrow = useMediaQuery(theme.breakpoints.down('lg'))
 
-  useEffect(() => {
-    if (isNarrow) {
-      setMobileOpen(true)
+  const blurActiveElement = () => {
+    const el = document.activeElement
+    if (el && typeof el.blur === 'function') {
+      el.blur()
     }
-  }, [isNarrow])
+  }
+
+  const handleClose = () => {
+    setMobileOpen(false)
+    blurActiveElement()
+  }
+
+  useEffect(() => {
+    if (!isNarrow && mobileOpen) {
+      setMobileOpen(false)
+      blurActiveElement()
+    }
+  }, [isNarrow, mobileOpen])
   
   const rulesContent = (
     <Box
@@ -235,7 +248,7 @@ export default function RulesReference() {
       <Drawer
         anchor="right"
         open={mobileOpen}
-        onClose={() => setMobileOpen(false)}
+        onClose={handleClose}
         ModalProps={{
           keepMounted: true,
         }}
