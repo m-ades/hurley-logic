@@ -9,6 +9,9 @@ export default function Layout({ title, subtitle, score, total, scoreStyle, curr
     if (typeof window === 'undefined') return false
     return window.matchMedia && window.matchMedia('(hover: none)').matches
   })
+  const attendanceFormUrl = import.meta.env.VITE_ATTENDANCE_FORM_URL || ''
+  const attendanceFormText = import.meta.env.VITE_ATTENDANCE_FORM_TEXT || ''
+  const showFormCTA = attendanceFormUrl && attendanceFormText
   const handleOpen = () => setDropdownOpen(true)
   const handleClose = () => setDropdownOpen(false)
   return (
@@ -82,6 +85,59 @@ export default function Layout({ title, subtitle, score, total, scoreStyle, curr
         }}
       >
         <Container maxWidth="lg" sx={{ py: { xs: 2, md: 4 }, position: 'relative', zIndex: 1, mx: 0, px: { xs: 1, sm: 2, md: 4 }, ml: { xs: 0, md: 'auto' }, mr: { xs: 0, md: 0, lg: 340 } }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              mb: 2,
+              flexWrap: 'wrap',
+              pl: { xs: 0, md: '224px' }, //align with proof box
+            }}
+          >
+            {showFormCTA && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  backgroundColor: 'rgba(0,0,0,0.03)',
+                  borderRadius: '10px',
+                  padding: '8px 12px',
+                  border: '1px solid rgba(0,0,0,0.05)',
+                  maxWidth: { xs: '100%', md: '620px' },
+                  width: '100%',
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{ color: 'rgba(0, 0, 0, 0.75)', fontSize: { xs: '0.78rem', md: '0.86rem' }, flexGrow: 1 }}
+                >
+                  {attendanceFormText}
+                </Typography>
+                <a
+                  href={attendanceFormUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '8px 14px',
+                    borderRadius: '8px',
+                    background: '#8155ba',
+                    color: '#fff',
+                    fontFamily: '"IBM Plex Sans", sans-serif',
+                    fontSize: '0.9rem',
+                    textDecoration: 'none',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Open form
+                </a>
+              </Box>
+            )}
+          </Box>
           <Box sx={{ 
             display: 'flex', 
             alignItems: 'center', 
