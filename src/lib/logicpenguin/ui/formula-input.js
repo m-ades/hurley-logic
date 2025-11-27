@@ -526,8 +526,10 @@ function makeSymbolWidgetFor(notationname) {
             symbolwidget.buttonfor[op] = td;
             td.myWidget = symbolwidget;
             td.myOp = op;
-            td.innerHTML = htmlEscape(symbols[op]);
-            td.title = htmlEscape('Insert ' + symbols[op]);
+            const isQuantifier = (op === 'FORALL' || op === 'EXISTS');
+            const quantText = `(${symbols[op]}x)`;
+            td.innerHTML = htmlEscape(isQuantifier ? quantText : symbols[op]);
+            td.title = htmlEscape('Insert ' + (isQuantifier ? quantText : symbols[op]));
             td.tabIndex = -1;
             td.classList.add('symbolwidgetbutton');
             // prevent it from unfocusing the input field
@@ -539,7 +541,20 @@ function makeSymbolWidgetFor(notationname) {
             }
             td.onclick = function(e) {
                 if (!this?.myWidget?.targetInput) { return; }
-                symbolwidget.targetInput.insOp(td.myOp);
+                if (isQuantifier) {
+                    const target = symbolwidget.targetInput;
+                    const start = target.selectionStart ?? target.value.length;
+                    const end = target.selectionEnd ?? start;
+                    target.setRangeText(quantText, start, end, 'end');
+                    const newPos = start + quantText.length;
+                    target.focus();
+                    target.setSelectionRange(newPos, newPos);
+                    if (target?.myline?.mysubderiv?.myprob.makeChanged) {
+                        target.myline.mysubderiv.myprob.makeChanged(false, true);
+                    }
+                } else {
+                    symbolwidget.targetInput.insOp(td.myOp);
+                }
                 // note: insOp will trigger makeChanged
             };
         }

@@ -27,6 +27,8 @@ export default function App() {
 
   const handleExport = async () => {
     if (!currentWorksheet) return
+    const ok = window.confirm('Download your answers as PDF?')
+    if (!ok) return
     
     try {
       let liveState = null

@@ -113,6 +113,21 @@ export default class DerivationExercise extends LogicPenguinProblem {
             this.useShowLines = false;
         }
 
+        // helper to commit the currently focused input so its value is captured
+        this.finalizeActiveInput = () => {
+            const active = document.activeElement;
+            if (!active || !this.contains(active)) return;
+            if (typeof active.inputfix === 'function') {
+                active.value = active.inputfix(active.value);
+            }
+            if (typeof active.dispatchEvent === 'function') {
+                active.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            if (typeof active.blur === 'function') {
+                active.blur();
+            }
+        };
+
         // assign notation, symbols, syntax from options
         this.notationname = options?.notation ?? 'cambridge';
         this.syntax = getSyntax(this.notationname);
@@ -247,6 +262,9 @@ export default class DerivationExercise extends LogicPenguinProblem {
             },
             onclick: function(e) {
                 e.preventDefault();
+                if (typeof this.myprob.finalizeActiveInput === 'function') {
+                    this.myprob.finalizeActiveInput();
+                }
                 this.myprob.processAnswer();
             }
         });
