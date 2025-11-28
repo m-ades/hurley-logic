@@ -11,5 +11,4 @@ Static React web app for practicing formal logic proofs in Hurley’s notation f
 
 ## License
 
-This project uses code from LogicPenguin, which is licensed under GNU GPL v3. This project is also licensed under GNU GPL v3.
-
+This project uses code from LogicPenguin, which is licensed under GNU GPL v3.
