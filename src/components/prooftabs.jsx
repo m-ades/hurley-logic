@@ -88,22 +88,22 @@ export default function ProofTabs({
           minWidth: { xs: 'auto', md: 200 },
           maxWidth: { xs: '100%', md: 200 },
           '& .MuiTab-root': {
-            color: '#beafc2',
+            color: '#2f6bff',
             transition: 'all 0.2s ease',
             minWidth: { xs: 'auto', md: 200 },
             fontSize: { xs: '0.875rem', md: '1rem' },
             textTransform: 'none',
             '&:hover': {
-              color: '#8155ba',
-              backgroundColor: 'rgba(129, 85, 186, 0.08)',
+              color: '#2f6bff',
+              backgroundColor: 'rgba(47, 107, 255, 0.08)',
             },
           },
           '& .MuiTab-root.Mui-selected': {
-            color: '#8155ba',
+            color: '#2f6bff',
             fontWeight: 600,
           },
           '& .MuiTabs-indicator': {
-            backgroundColor: '#8155ba',
+            backgroundColor: '#2f6bff',
           },
         }}
       >
@@ -114,7 +114,7 @@ export default function ProofTabs({
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, width: '100%' }}>
                 <span>Problem {proof.questionId || proof.id}</span>
                 {completedProofs.has(proof.id) && (
-                  <CheckCircleIcon sx={{ color: '#beafc2', fontSize: 16 }} />
+                  <CheckCircleIcon sx={{ color: '#2f6bff', fontSize: 16 }} />
                 )}
               </Box>
             }
@@ -123,15 +123,15 @@ export default function ProofTabs({
               textAlign: 'center',
               color: 'rgba(0, 0, 0, 0.9)',
               '&:hover': {
-                color: '#8155ba',
+                color: '#2f6bff',
                 '& span': {
-                  color: '#8155ba',
+                  color: '#2f6bff',
                 },
               },
               '&.Mui-selected': {
-                color: '#8155ba',
+                color: '#2f6bff',
                 '& span': {
-                  color: '#8155ba',
+                  color: '#2f6bff',
                 },
               },
             }}

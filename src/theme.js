@@ -5,9 +5,9 @@ const theme = createTheme({
     fontFamily: `"IBM Plex Sans", sans-serif`,
   },
   palette: {
-    background: { default: "#fafafa" },
+    background: { default: "#f6f7fa" },
     primary: {
-      main: '#8155ba',
+      main: '#2f6bff',
     },
   },
   components: {
@@ -28,4 +28,3 @@ const theme = createTheme({
 });
 
 export default theme;
-

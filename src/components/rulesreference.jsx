@@ -21,12 +21,12 @@ function RulesCard({ title, children, defaultExpanded = false }) {
           alignItems: 'center', 
           justifyContent: 'space-between',
           padding: '10px 12px',
-          color: '#beafc2',
+          color: '#2f6bff',
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           '&:hover': {
-            color: '#8155ba',
-            backgroundColor: 'rgba(129, 85, 186, 0.08)',
+            color: '#2f6bff',
+            backgroundColor: 'rgba(47, 107, 255, 0.08)',
           },
         }}
       >
@@ -105,7 +105,7 @@ export default function RulesReference() {
       }}
     >
       <RulesCard title="Keyboard Shortcuts" defaultExpanded={true}>
-        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#2f6bff', fontSize: '0.95rem' }}>
           Symbols
         </Typography>
         <Box component="div" sx={{ mb: 1.5, fontSize: '0.85rem' }}>
@@ -116,7 +116,7 @@ export default function RulesReference() {
           <div><strong>•</strong> Type <strong>all</strong> for ∀ (universal quantifier)</div>
           <div><strong>•</strong> Type <strong>some</strong> for ∃ (existential quantifier)</div>
         </Box>
-        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#2f6bff', fontSize: '0.95rem' }}>
           Navigation
         </Typography>
         <Box component="div" sx={{ fontSize: '0.85rem' }}>
@@ -126,7 +126,7 @@ export default function RulesReference() {
       </RulesCard>
       
       <RulesCard title="Rules of Reference" defaultExpanded={false}>
-        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#2f6bff', fontSize: '0.95rem' }}>
           Rules of Implication
         </Typography>
         <Box component="div" sx={{ mb: 1.5, fontSize: '0.85rem' }}>
@@ -139,7 +139,7 @@ export default function RulesReference() {
           <div><strong>7. Conj:</strong> p, q / p • q</div>
           <div><strong>8. Add:</strong> p / p ∨ q</div>
         </Box>
-        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#2f6bff', fontSize: '0.95rem' }}>
           Rules of Replacement
         </Typography>
         <Box component="div" sx={{ fontSize: '0.85rem' }}>
@@ -173,7 +173,7 @@ export default function RulesReference() {
       </RulesCard>
       
       <RulesCard title="Predicate Logic Rules" defaultExpanded={false}>
-        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#2f6bff', fontSize: '0.95rem' }}>
           Predicate Logic Rules
         </Typography>
         <Box component="div" sx={{ mb: 1.5, fontSize: '0.85rem' }}>
@@ -182,7 +182,7 @@ export default function RulesReference() {
           <div><strong>EI:</strong> (∃x)Fx / Fa</div>
           <div><strong>EG:</strong> Fa / (∃x)Fx &nbsp;or&nbsp; Fx / (∃x)Fx</div>
         </Box>
-        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#8155ba', fontSize: '0.95rem' }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5, color: '#2f6bff', fontSize: '0.95rem' }}>
           Change of Quantifier (CQ) / Quantifier Negation (QN)
         </Typography>
         <Box component="div" sx={{ mb: 1.5, fontSize: '0.85rem' }}>
