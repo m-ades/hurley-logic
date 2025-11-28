@@ -4,31 +4,7 @@ async function loadJsPDF() {
     const { jsPDF } = await import('jspdf')
     return jsPDF
   } catch (error) {
-    // if that fails, load from public folder
-    if (window.jspdf?.jsPDF) return window.jspdf.jsPDF
-    if (window.jsPDF) return window.jsPDF
-
-    // if that fails, load from script tag
-    await new Promise((resolve, reject) => {
-      const baseUrl = import.meta.env.BASE_URL || '/'
-      const script = document.createElement("script")
-      script.src = `${baseUrl}js/jspdf.umd.min.js`
-      script.onload = () => {
-        setTimeout(() => {
-          if (window.jspdf?.jsPDF) resolve()
-          else if (window.jsPDF) resolve()
-          else reject(new Error("jsPDF not found after script load"))
-        }, 100)
-      }
-      script.onerror = () => {
-        reject(new Error("Failed to load jsPDF from both npm and public folder"))
-      }
-      document.head.appendChild(script)
-    })
-
-    if (window.jspdf?.jsPDF) return window.jspdf.jsPDF
-    if (window.jsPDF) return window.jsPDF
-    throw new Error("jsPDF not available")
+    throw new Error("jsPDF not available from npm import")
   }
 }
 
@@ -172,7 +148,7 @@ export async function exportWorksheetPDF(worksheet) {
     }
 
   doc.setFontSize(16)
-  write(marginLeft, `WORKSHEET ${worksheet.worksheetId}`)
+  write(marginLeft, `Worksheet ${worksheet.worksheetId}`)
   doc.setFontSize(12)
   y += lh * 2
 
@@ -203,7 +179,7 @@ export async function exportWorksheetPDF(worksheet) {
     const MIN_COLUMN = 260
     const columnX = marginLeft + Math.max(leftWidth + 12, MIN_COLUMN)
 
-    write(marginLeft, `QUESTION ${proof.questionId || idx + 1}`)
+    write(marginLeft, `Problem ${proof.questionId || idx + 1}`)
     y += lh
 
     // print premises with conclusion aligned on last premise
