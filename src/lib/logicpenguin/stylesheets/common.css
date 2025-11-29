@@ -686,7 +686,7 @@ a#lplogo:hover span {
 /* Download button animation styles - From Uiverse.io by ilkhoeri */
 .action_has {
   --color: 0 0% 60%;
-  --color-has: 270deg 40% 60%;
+  --color-has: 220deg 100% 59%;
   --sz: 1rem;
   cursor: pointer;
   display: flex;

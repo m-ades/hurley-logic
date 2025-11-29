@@ -235,9 +235,9 @@ export default function RulesReference() {
           right: 16,
           zIndex: 1000,
           display: { xs: 'flex', lg: 'none' },
-          backgroundColor: '#8155ba',
+          backgroundColor: '#2f6bff',
           '&:hover': {
-            backgroundColor: '#6a4499',
+            backgroundColor: '#2f6bff',
           },
         }}
       >
