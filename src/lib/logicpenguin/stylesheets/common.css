@@ -568,12 +568,12 @@ a#lplogo:hover span {
 .logicpenguin button:hover,
 .logicpenguin .buttondiv button:hover {
   opacity: 0.9;
-  box-shadow: 0 2px 4px rgba(129, 85, 186, 0.25);
+  box-shadow: 0 2px 4px rgba(69, 69, 70, 0.4);
 }
 
 .logicpenguin .buttondiv button:hover {
   background-color: #2f6bff;
-  box-shadow: 0px 15px 20px rgba(129, 85, 186, 0.4);
+  box-shadow: 0px 15px 20px rgba(69, 69, 70, 0.4);
   color: #fff;
   transform: translateY(-7px);
 }
@@ -583,7 +583,7 @@ a#lplogo:hover span {
 .logicpenguin .buttondiv button:focus,
 .logicpenguin .buttondiv button:active {
   opacity: 0.85;
-  box-shadow: 0 1px 1px rgba(129, 85, 186, 0.15);
+  box-shadow: 0 1px 1px rgba(69, 69, 70, 0.4);
 }
 
 .logicpenguin .buttondiv button:active {
