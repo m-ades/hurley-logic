@@ -43,10 +43,16 @@ const WORKSHEET_16 = [
   createProof(16, 8, ['(∃x)(Ax ∨ Ex) ⊃ (x)(Bx • ~Cx)', '(∃x)(Bx ∨ Fx) ⊃ (x)(Cx ∨ Dx)'], '(x)(Ax ⊃ Dx)'),
 ]
 
+const PRACTICE_SET = [
+  createProof(17, 1, ['(x)(Ax ≡ Bx)', '(x)[Ax ⊃ (Bx ⊃ Cx)]', '(∃x)Ax ∨ (∃x)Bx'], '(∃x)Cx'),
+  createProof(17, 2, ['(∃x)(Hx•Gx) ⊃ (∀x) Ax', '~Am'], '(∀x)(Hx ⊃ ~Gx)'),
+]
+
 export const WORKSHEETS = [
   { id: 14, title: 'Worksheet 14', proofs: WORKSHEET_14 },
   { id: 15, title: 'Worksheet 15', proofs: WORKSHEET_15 },
   { id: 16, title: 'Worksheet 16', proofs: WORKSHEET_16 },
+  { id: 17, title: 'Practice Set', proofs: PRACTICE_SET },
 ]
 
 // Legacy export for backwards compatibility
